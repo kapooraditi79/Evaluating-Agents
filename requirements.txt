@@ -1,3 +1,2 @@
-requests==2.32.5
-jsonschema==4.23.0
-pytest==7.4.3
+# Shared dependencies and development tools are pinned in pyproject.toml.
+-e .[dev]

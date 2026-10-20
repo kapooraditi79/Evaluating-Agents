@@ -1,0 +1,41 @@
+{
+  "affected_services": [
+    "checkout",
+    "frontend",
+    "payment"
+  ],
+  "decoys": [],
+  "degradations": [],
+  "features": [
+    "latency"
+  ],
+  "generator_version": "0.1.0",
+  "id": "8deefbd54e6fe92d4b8cc42bdb92976265dfd18f2b8e93eb304a5c187caca0ba",
+  "no_fault": false,
+  "root_causes": [
+    {
+      "end_time": null,
+      "fault_type": "slow_dependency",
+      "injection_mechanism": "latency",
+      "onset_time": "2026-03-14T14:04:30Z",
+      "propagation_path": [
+        "payment",
+        "checkout",
+        "frontend"
+      ],
+      "role": "primary",
+      "scope": {
+        "kind": "all",
+        "value": null
+      },
+      "service": "payment"
+    }
+  ],
+  "schema_version": "0.1.0",
+  "seed": 101,
+  "symptom": {
+    "kind": "latency_or_errors",
+    "operation": "POST /checkout"
+  },
+  "tier": "easy"
+}

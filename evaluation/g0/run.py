@@ -53,9 +53,18 @@ def shell(cmd: list[str]) -> str:
 
 
 def chat(host: str, model: str, messages: list, options: dict, timeout: float) -> dict:
-    r = requests.post(f"{host}/api/chat", timeout=timeout, json={
-        "model": model, "messages": messages, "tools": TOOLS,
-        "stream": False, "options": options, "keep_alive": "10m"})
+    r = requests.post(
+        f"{host}/api/chat",
+        timeout=timeout,
+        json={
+            "model": model,
+            "messages": messages,
+            "tools": TOOLS,
+            "stream": False,
+            "options": options,
+            "keep_alive": "10m",
+        },
+    )
     r.raise_for_status()
     return r.json()
 
@@ -75,13 +84,15 @@ def timing_of(resp: dict, wall_s: float) -> dict:
 
 
 def run_case(case: dict, args, options: dict, out_dir: Path) -> dict:
-    system = SYSTEM_PROMPT.format(start=DATA_RANGE[0], end=DATA_RANGE[1],
-                                  ref=case["reference_time"])
+    system = SYSTEM_PROMPT.format(
+        start=DATA_RANGE[0], end=DATA_RANGE[1], ref=case["reference_time"]
+    )
     messages = [{"role": "system", "content": system}, *case["messages"]]
     case_dir = out_dir / case["id"]
     case_dir.mkdir(parents=True, exist_ok=True)
-    (case_dir / "request.json").write_text(json.dumps(
-        {"model": args.model, "options": options, "messages": messages}, indent=2))
+    (case_dir / "request.json").write_text(
+        json.dumps({"model": args.model, "options": options, "messages": messages}, indent=2)
+    )
 
     started = time.time()
     try:
@@ -89,8 +100,15 @@ def run_case(case: dict, args, options: dict, out_dir: Path) -> dict:
         grading = grade_case(resp.get("message", {}), case)
     except requests.RequestException as e:
         resp = {"error": str(e)}
-        grading = {"passed": False, "failure": "request_error", "problems": [str(e)],
-                   "mode": case["expect"]["mode"], "n_calls": 0, "calls": [], "levels": {}}
+        grading = {
+            "passed": False,
+            "failure": "request_error",
+            "problems": [str(e)],
+            "mode": case["expect"]["mode"],
+            "n_calls": 0,
+            "calls": [],
+            "levels": {},
+        }
     timing = timing_of(resp, time.time() - started)
 
     (case_dir / "response.json").write_text(json.dumps(resp, indent=2))
@@ -113,19 +131,25 @@ def summarize(phase: str, results: list[dict]) -> dict:
             failures[r["grading"]["failure"]] += 1
     ev = [r["timing"]["eval_tokens_per_s"] for r in results if r["timing"]["eval_tokens_per_s"]]
     summary = {
-        "phase": phase, "n": n, "passed": passed,
+        "phase": phase,
+        "n": n,
+        "passed": passed,
         "pass_rate": round(passed / n, 3) if n else 0.0,
         "wilson95": [round(lo, 3), round(hi, 3)],
         "invalid_tool_names": failures.get("unknown_tool", 0),
         "failures": dict(failures),
         "by_category": {k: f"{v[0]}/{v[1]}" for k, v in by_cat.items()},
         "mean_eval_tokens_per_s": round(sum(ev) / len(ev), 1) if ev else None,
-        "mean_prompt_tokens": round(sum(r["timing"]["prompt_tokens"] for r in results) / n) if n else 0,
+        "mean_prompt_tokens": round(sum(r["timing"]["prompt_tokens"] for r in results) / n)
+        if n
+        else 0,
         "max_prompt_tokens": max((r["timing"]["prompt_tokens"] for r in results), default=0),
     }
     if phase == "gate":
-        ok = (summary["pass_rate"] >= GATE_MIN_PASS_RATE
-              and summary["invalid_tool_names"] <= GATE_MAX_INVALID_TOOL_NAMES)
+        ok = (
+            summary["pass_rate"] >= GATE_MIN_PASS_RATE
+            and summary["invalid_tool_names"] <= GATE_MAX_INVALID_TOOL_NAMES
+        )
         summary["verdict"] = "PASS" if ok else "FAIL"
     else:
         summary["verdict"] = "none (pilot runs never produce a verdict)"
@@ -161,20 +185,29 @@ def main() -> int:
         results.append(res)
         g, t = res["grading"], res["timing"]
         status = "PASS" if g["passed"] else f"FAIL[{g['failure']}]"
-        print(f"  {case['id']:<26} {case['category']:<20} {status:<28} "
-              f"{t['duration_ms']:>6} ms  in={t['prompt_tokens']:>5} out={t['completion_tokens']:>4}")
+        print(
+            f"  {case['id']:<26} {case['category']:<20} {status:<28} "
+            f"{t['duration_ms']:>6} ms  in={t['prompt_tokens']:>5} out={t['completion_tokens']:>4}"
+        )
         for problem in g["problems"][:2]:
             print(f"      - {problem}")
 
-    (out_dir / "meta.json").write_text(json.dumps({
-        "model": args.model, "options": options, "phase": spec["phase"],
-        "cases_file": str(args.cases),
-        "cases_sha256": hashlib.sha256(args.cases.read_bytes()).hexdigest()[:12],
-        "ollama_version": shell(["ollama", "--version"]),
-        "ollama_ps": shell(["ollama", "ps"]),
-        "git_sha": shell(["git", "rev-parse", "--short", "HEAD"]),
-        "started_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
-    }, indent=2))
+    (out_dir / "meta.json").write_text(
+        json.dumps(
+            {
+                "model": args.model,
+                "options": options,
+                "phase": spec["phase"],
+                "cases_file": str(args.cases),
+                "cases_sha256": hashlib.sha256(args.cases.read_bytes()).hexdigest()[:12],
+                "ollama_version": shell(["ollama", "--version"]),
+                "ollama_ps": shell(["ollama", "ps"]),
+                "git_sha": shell(["git", "rev-parse", "--short", "HEAD"]),
+                "started_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
+            },
+            indent=2,
+        )
+    )
     summary = summarize(spec["phase"], results)
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=2))
 

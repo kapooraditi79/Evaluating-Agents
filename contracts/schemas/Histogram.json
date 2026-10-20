@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "ts_ns": {
+      "minimum": 0,
+      "title": "Ts Ns",
+      "type": "integer"
+    },
+    "service": {
+      "title": "Service",
+      "type": "string"
+    },
+    "operation": {
+      "title": "Operation",
+      "type": "string"
+    },
+    "bounds_ms": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Bounds Ms",
+      "type": "array"
+    },
+    "counts": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Counts",
+      "type": "array"
+    }
+  },
+  "required": [
+    "ts_ns",
+    "service",
+    "operation",
+    "bounds_ms",
+    "counts"
+  ],
+  "title": "Histogram",
+  "type": "object"
+}

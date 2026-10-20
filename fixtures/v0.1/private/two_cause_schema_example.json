@@ -1,0 +1,51 @@
+{
+  "affected_services": [],
+  "decoys": [],
+  "degradations": [],
+  "features": [],
+  "generator_version": "0.1.0",
+  "id": "schema-example-only",
+  "no_fault": false,
+  "root_causes": [
+    {
+      "end_time": null,
+      "fault_type": "dependency_unavailable",
+      "injection_mechanism": "dependency_down",
+      "onset_time": "2026-03-14T14:04:30Z",
+      "propagation_path": [
+        "payment",
+        "checkout",
+        "frontend"
+      ],
+      "role": "primary",
+      "scope": {
+        "kind": "all",
+        "value": null
+      },
+      "service": "payment"
+    },
+    {
+      "end_time": null,
+      "fault_type": "retry_amplification",
+      "injection_mechanism": "retries",
+      "onset_time": "2026-03-14T14:04:30Z",
+      "propagation_path": [
+        "checkout",
+        "frontend"
+      ],
+      "role": "trigger",
+      "scope": {
+        "kind": "all",
+        "value": null
+      },
+      "service": "checkout"
+    }
+  ],
+  "schema_version": "0.1.0",
+  "seed": 0,
+  "symptom": {
+    "kind": "errors",
+    "operation": "POST /checkout"
+  },
+  "tier": "easy"
+}

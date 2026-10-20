@@ -1,0 +1,91 @@
+{
+  "$defs": {
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "const": "parquet",
+          "default": "parquet",
+          "title": "Type",
+          "type": "string"
+        },
+        "path": {
+          "const": ".",
+          "default": ".",
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "title": "Source",
+      "type": "object"
+    },
+    "Window": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "title": "End",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "Window",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0",
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "id": {
+      "pattern": "^[0-9a-f]{16,64}$",
+      "title": "Id",
+      "type": "string"
+    },
+    "question": {
+      "title": "Question",
+      "type": "string"
+    },
+    "data_range": {
+      "$ref": "#/$defs/Window"
+    },
+    "reference_time": {
+      "title": "Reference Time",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/Source"
+    },
+    "bucket_seconds": {
+      "default": 10,
+      "exclusiveMinimum": 0,
+      "title": "Bucket Seconds",
+      "type": "integer"
+    },
+    "trace_sampling_rate": {
+      "default": 1,
+      "exclusiveMinimum": 0,
+      "maximum": 1,
+      "title": "Trace Sampling Rate",
+      "type": "number"
+    }
+  },
+  "required": [
+    "id",
+    "question",
+    "data_range",
+    "reference_time"
+  ],
+  "title": "Manifest",
+  "type": "object"
+}

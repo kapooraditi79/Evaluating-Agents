@@ -1,13 +1,38 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "otel-rca-investigator"
-version = "0.0.1"
+name = "otel-investigator-environment"
+version = "0.1.0"
+description = "Telemetry environment and G0 pilot for the root-cause investigator"
 requires-python = ">=3.12"
+dependencies = [
+  "pydantic==2.13.4", "pyarrow==16.1.0", "numpy==1.26.4",
+  "opentelemetry-sdk==1.38.0", "mcp==1.26.0", "PyYAML==6.0.2",
+  "requests==2.32.5", "jsonschema==4.23.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.0.3", "ruff==0.14.0"]
+
+[project.scripts]
+telemetry-lab = "telemetry.cli:main"
+telemetry-mcp = "mcp_servers.telemetry.server:main"
+
+[tool.setuptools.packages.find]
+include = ["contracts*", "telemetry*", "store*", "mcp_servers*", "evaluation*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
 norecursedirs = ["reference", "runs", "data", ".git"]
-addopts = "-q"
+addopts = "-q --basetemp=data/pytest-tmp"
+cache_dir = "data/pytest-cache"
 
 [tool.ruff]
 line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

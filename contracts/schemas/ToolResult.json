@@ -1,0 +1,130 @@
+{
+  "$defs": {
+    "TableData": {
+      "additionalProperties": false,
+      "properties": {
+        "columns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Columns",
+          "type": "array"
+        },
+        "rows": {
+          "items": {
+            "items": {},
+            "type": "array"
+          },
+          "title": "Rows",
+          "type": "array"
+        }
+      },
+      "required": [
+        "columns",
+        "rows"
+      ],
+      "title": "TableData",
+      "type": "object"
+    },
+    "ToolSource": {
+      "additionalProperties": false,
+      "properties": {
+        "backend": {
+          "const": "parquet",
+          "default": "parquet",
+          "title": "Backend",
+          "type": "string"
+        },
+        "dataset_id": {
+          "title": "Dataset Id",
+          "type": "string"
+        },
+        "tool_version": {
+          "default": "0.1.1",
+          "title": "Tool Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dataset_id"
+      ],
+      "title": "ToolSource",
+      "type": "object"
+    },
+    "WarningItem": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "WarningItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "data": {
+      "$ref": "#/$defs/TableData"
+    },
+    "total_matches": {
+      "minimum": 0,
+      "title": "Total Matches",
+      "type": "integer"
+    },
+    "returned": {
+      "minimum": 0,
+      "title": "Returned",
+      "type": "integer"
+    },
+    "truncated": {
+      "title": "Truncated",
+      "type": "boolean"
+    },
+    "next_cursor": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Next Cursor"
+    },
+    "query_id": {
+      "title": "Query Id",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/ToolSource"
+    },
+    "warnings": {
+      "items": {
+        "$ref": "#/$defs/WarningItem"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "data",
+    "total_matches",
+    "returned",
+    "truncated",
+    "next_cursor",
+    "query_id",
+    "source"
+  ],
+  "title": "ToolResult",
+  "type": "object"
+}

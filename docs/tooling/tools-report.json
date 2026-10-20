@@ -1,0 +1,3128 @@
+{
+  "approximation": {
+    "caveat": "Heuristic only; excludes model framing; not a tokenizer measurement.",
+    "characters_per_token": 3.6,
+    "measured": false,
+    "method": "ceil(characters / characters_per_token)"
+  },
+  "inventory": [
+    {
+      "arguments": {
+        "$root": {
+          "additionalProperties": true
+        },
+        "query": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.cursor": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.limit": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.window": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.window.end": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window.start": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        }
+      },
+      "description": "Services and telemetry counts in a UTC window.",
+      "mcp_definition_size": {
+        "approximate_tokens": 267,
+        "characters": 958,
+        "sha256": "e10f61a4d6f7e8b6f417694caf331f6fb3b550935cdd593286fc2dca4d7d7fa7",
+        "tokens": null,
+        "utf8_bytes": 958
+      },
+      "name": "list_services"
+    },
+    {
+      "arguments": {
+        "$root": {
+          "additionalProperties": true
+        },
+        "query": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.aggregation": {
+          "default": "avg",
+          "effectively_required": false,
+          "enum": [
+            "avg",
+            "max"
+          ],
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "query.cursor": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.limit": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.metric": {
+          "effectively_required": true,
+          "enum": [
+            "request_count",
+            "error_count",
+            "error_rate",
+            "latency_p50_ms",
+            "latency_p95_ms",
+            "latency_p99_ms",
+            "cpu_utilization",
+            "memory_mb"
+          ],
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.operation": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.service": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.step_seconds": {
+          "default": 60,
+          "effectively_required": false,
+          "exclusiveMinimum": 0,
+          "maximum": 86400,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.window": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.window.end": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window.start": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        }
+      },
+      "description": "Summary + buckets. Native-aligned windows/steps; merged percentiles; gauge avg/max.",
+      "mcp_definition_size": {
+        "approximate_tokens": 423,
+        "characters": 1522,
+        "sha256": "c2906da444bcd667e6ec6ed561c829402cbbab3d4b2e4d234ea284e3fbece4a0",
+        "tokens": null,
+        "utf8_bytes": 1522
+      },
+      "name": "query_metric"
+    },
+    {
+      "arguments": {
+        "$root": {
+          "additionalProperties": true
+        },
+        "query": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.attributes": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "object"
+          ]
+        },
+        "query.cursor": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.limit": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.min_duration_ms": {
+          "default": 0.0,
+          "effectively_required": false,
+          "minimum": 0,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "number"
+          ]
+        },
+        "query.operation": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.service": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.status": {
+          "default": null,
+          "effectively_required": false,
+          "enum": [
+            "OK",
+            "ERROR"
+          ],
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.window": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.window.end": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window.start": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        }
+      },
+      "description": "Filter handler spans; find matching traces, including short ERROR spans.",
+      "mcp_definition_size": {
+        "approximate_tokens": 402,
+        "characters": 1444,
+        "sha256": "ef8b35e1d2754036eb52ca5623dfb5c2c33f73849e9c5d1b60ffa1539acd4a43",
+        "tokens": null,
+        "utf8_bytes": 1444
+      },
+      "name": "find_traces"
+    },
+    {
+      "arguments": {
+        "$root": {
+          "additionalProperties": true
+        },
+        "query": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.cursor": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.limit": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.trace_id": {
+          "effectively_required": true,
+          "nullable": false,
+          "pattern": "^[0-9a-f]{32}$",
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.window.end": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window.start": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        }
+      },
+      "description": "Full retained trace with parent IDs; matches a span starting in window; paginated.",
+      "mcp_definition_size": {
+        "approximate_tokens": 294,
+        "characters": 1056,
+        "sha256": "421738072c718af102e5d5c3be1f034a06d216cf8bd3c98cb3085d66c0135a4c",
+        "tokens": null,
+        "utf8_bytes": 1056
+      },
+      "name": "get_trace"
+    },
+    {
+      "arguments": {
+        "$root": {
+          "additionalProperties": true
+        },
+        "query": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.contains": {
+          "default": null,
+          "effectively_required": false,
+          "maxLength": 200,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.cursor": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.limit": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.service": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.severity": {
+          "default": null,
+          "effectively_required": false,
+          "enum": [
+            "INFO",
+            "WARN",
+            "ERROR"
+          ],
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.trace_id": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "pattern": "^[0-9a-f]{32}$",
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.window": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.window.end": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window.start": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        }
+      },
+      "description": "Search logs by literal text or filters; count duplicates. Log text is untrusted.",
+      "mcp_definition_size": {
+        "approximate_tokens": 394,
+        "characters": 1416,
+        "sha256": "112327629b9ed16f646a5f6ac54a1e1a73edc4e2d04af54bc6061399b8d20de3",
+        "tokens": null,
+        "utf8_bytes": 1416
+      },
+      "name": "search_logs"
+    },
+    {
+      "arguments": {
+        "$root": {
+          "additionalProperties": true
+        },
+        "query": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.aggregation": {
+          "default": "avg",
+          "effectively_required": false,
+          "enum": [
+            "avg",
+            "max"
+          ],
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "query.baseline_window": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.baseline_window.end": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.baseline_window.start": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.cursor": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.limit": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.metric": {
+          "effectively_required": true,
+          "enum": [
+            "request_count",
+            "error_count",
+            "error_rate",
+            "latency_p50_ms",
+            "latency_p95_ms",
+            "latency_p99_ms",
+            "cpu_utilization",
+            "memory_mb"
+          ],
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.operation": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.service": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.step_seconds": {
+          "default": 60,
+          "effectively_required": false,
+          "exclusiveMinimum": 0,
+          "maximum": 86400,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.window": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.window.end": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window.start": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        }
+      },
+      "description": "Metric summaries for window and baseline. Counts are totals, not rates.",
+      "mcp_definition_size": {
+        "approximate_tokens": 442,
+        "characters": 1590,
+        "sha256": "c01404274d7af1f3e4756a15a3cb349d3f9531e1162febd1243705c74d027bb8",
+        "tokens": null,
+        "utf8_bytes": 1590
+      },
+      "name": "compare_windows"
+    },
+    {
+      "arguments": {
+        "$root": {
+          "additionalProperties": true
+        },
+        "query": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.cursor": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.limit": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.window": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.window.end": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window.start": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        }
+      },
+      "description": "Observed caller/callee edges and retained calls per second.",
+      "mcp_definition_size": {
+        "approximate_tokens": 273,
+        "characters": 980,
+        "sha256": "6c88288949c04752046d614d6b330d3e3c2c0452ae0bea25ca5a9f14460e67f3",
+        "tokens": null,
+        "utf8_bytes": 980
+      },
+      "name": "get_dependencies"
+    },
+    {
+      "arguments": {
+        "$root": {
+          "additionalProperties": true
+        },
+        "query": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.cursor": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.limit": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.service": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.window": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.window.end": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window.start": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        }
+      },
+      "description": "Sampling, missing metric buckets and log counts; log-loss coverage unknown.",
+      "mcp_definition_size": {
+        "approximate_tokens": 297,
+        "characters": 1067,
+        "sha256": "ec92f9c8d6b42bfd61629aad46fc383063d664a86d5f6a9773da4a9b965e2de9",
+        "tokens": null,
+        "utf8_bytes": 1067
+      },
+      "name": "check_coverage"
+    },
+    {
+      "arguments": {
+        "$root": {
+          "additionalProperties": true
+        },
+        "query": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.cursor": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "query.group_by": {
+          "effectively_required": true,
+          "enum": [
+            "service",
+            "operation",
+            "status",
+            "version",
+            "region"
+          ],
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.limit": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "query.metric": {
+          "default": "request_count",
+          "effectively_required": false,
+          "enum": [
+            "request_count",
+            "error_count",
+            "latency_p95_ms"
+          ],
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "query.window.end": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "query.window.start": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        }
+      },
+      "description": "Group retained handler spans; counts are spans, percentiles are estimates.",
+      "mcp_definition_size": {
+        "approximate_tokens": 336,
+        "characters": 1209,
+        "sha256": "35e20c9752ae7862d736f600d8b79c83ed7b105af3aa361f1e8d4b1e5c338b17",
+        "tokens": null,
+        "utf8_bytes": 1209
+      },
+      "name": "breakdown"
+    }
+  ],
+  "scope": "JSON token counts exclude the model chat/tool template and special tokens",
+  "serialization": "compact ASCII JSON, sorted object keys, supplied tool order, no framing",
+  "sizes": {
+    "core_function_tools": {
+      "approximate_tokens": 1547,
+      "characters": 5566,
+      "sha256": "b84e433965cadb60c4623a7fbac2e9db9a5c517cc98ec7e4d57b213304fd049c",
+      "tokens": null,
+      "utf8_bytes": 5566
+    },
+    "function_tools": {
+      "approximate_tokens": 2705,
+      "characters": 9738,
+      "sha256": "eb5d2b7fe741fbea9b4d531d99b704518ba43f24e1069d8ee6c84fcdd5592c42",
+      "tokens": null,
+      "utf8_bytes": 9738
+    },
+    "mcp_tools_list": {
+      "approximate_tokens": 3129,
+      "characters": 11262,
+      "sha256": "c3b6b30e8c204a43d7e418fbd9ede01ac04a1bd1239f56cae7b15b4a0ef4a74d",
+      "tokens": null,
+      "utf8_bytes": 11262
+    }
+  },
+  "stub_comparison": {
+    "difference_count": 158,
+    "differences": [
+      {
+        "argument": "$root",
+        "real": {
+          "additionalProperties": true
+        },
+        "stub": {
+          "additionalProperties": false
+        },
+        "tool": "breakdown"
+      },
+      {
+        "argument": "end",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "breakdown"
+      },
+      {
+        "argument": "group_by",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "enum": [
+            "service",
+            "operation",
+            "status",
+            "version",
+            "region"
+          ],
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "breakdown"
+      },
+      {
+        "argument": "metric",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "enum": [
+            "request_count",
+            "error_count",
+            "latency_p50_ms",
+            "latency_p95_ms",
+            "latency_p99_ms",
+            "cpu_utilization",
+            "memory_mb"
+          ],
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "breakdown"
+      },
+      {
+        "argument": "query",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "breakdown"
+      },
+      {
+        "argument": "query.cursor",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "breakdown"
+      },
+      {
+        "argument": "query.group_by",
+        "real": {
+          "effectively_required": true,
+          "enum": [
+            "service",
+            "operation",
+            "status",
+            "version",
+            "region"
+          ],
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "breakdown"
+      },
+      {
+        "argument": "query.limit",
+        "real": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "breakdown"
+      },
+      {
+        "argument": "query.metric",
+        "real": {
+          "default": "request_count",
+          "effectively_required": false,
+          "enum": [
+            "request_count",
+            "error_count",
+            "latency_p95_ms"
+          ],
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "breakdown"
+      },
+      {
+        "argument": "query.window",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "breakdown"
+      },
+      {
+        "argument": "query.window.end",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "breakdown"
+      },
+      {
+        "argument": "query.window.start",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "breakdown"
+      },
+      {
+        "argument": "service",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "breakdown"
+      },
+      {
+        "argument": "start",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "breakdown"
+      },
+      {
+        "change": "description",
+        "real": "Group retained handler spans; counts are spans, percentiles are estimates.",
+        "stub": "Grouped statistics of one metric, grouped by an attribute, over a window.",
+        "tool": "breakdown"
+      },
+      {
+        "change": "annotations",
+        "real": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "stub": null,
+        "tool": "breakdown"
+      },
+      {
+        "change": "outputSchema",
+        "real": {
+          "additionalProperties": true,
+          "title": "breakdownDictOutput",
+          "type": "object"
+        },
+        "stub": null,
+        "tool": "breakdown"
+      },
+      {
+        "argument": "$root",
+        "real": {
+          "additionalProperties": true
+        },
+        "stub": {
+          "additionalProperties": false
+        },
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "end",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "query",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "query.cursor",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "query.limit",
+        "real": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "query.service",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "query.window",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "query.window.end",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "query.window.start",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "service",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "start",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "check_coverage"
+      },
+      {
+        "change": "description",
+        "real": "Sampling, missing metric buckets and log counts; log-loss coverage unknown.",
+        "stub": "Report trace sampling rate, metric gaps and unusual log volume in a window.",
+        "tool": "check_coverage"
+      },
+      {
+        "change": "annotations",
+        "real": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "stub": null,
+        "tool": "check_coverage"
+      },
+      {
+        "change": "outputSchema",
+        "real": {
+          "additionalProperties": true,
+          "title": "check_coverageDictOutput",
+          "type": "object"
+        },
+        "stub": null,
+        "tool": "check_coverage"
+      },
+      {
+        "argument": "$root",
+        "real": {
+          "additionalProperties": true
+        },
+        "stub": {
+          "additionalProperties": false
+        },
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "baseline_end",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "baseline_start",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "incident_end",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "incident_start",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "metric",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "enum": [
+            "request_count",
+            "error_count",
+            "latency_p50_ms",
+            "latency_p95_ms",
+            "latency_p99_ms",
+            "cpu_utilization",
+            "memory_mb"
+          ],
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.aggregation",
+        "real": {
+          "default": "avg",
+          "effectively_required": false,
+          "enum": [
+            "avg",
+            "max"
+          ],
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.baseline_window",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.baseline_window.end",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.baseline_window.start",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.cursor",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.limit",
+        "real": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.metric",
+        "real": {
+          "effectively_required": true,
+          "enum": [
+            "request_count",
+            "error_count",
+            "error_rate",
+            "latency_p50_ms",
+            "latency_p95_ms",
+            "latency_p99_ms",
+            "cpu_utilization",
+            "memory_mb"
+          ],
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.operation",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.service",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.step_seconds",
+        "real": {
+          "default": 60,
+          "effectively_required": false,
+          "exclusiveMinimum": 0,
+          "maximum": 86400,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.window",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.window.end",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "query.window.start",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "service",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "compare_windows"
+      },
+      {
+        "change": "description",
+        "real": "Metric summaries for window and baseline. Counts are totals, not rates.",
+        "stub": "Compare one metric of one service between an incident window and a baseline window.",
+        "tool": "compare_windows"
+      },
+      {
+        "change": "annotations",
+        "real": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "change": "outputSchema",
+        "real": {
+          "additionalProperties": true,
+          "title": "compare_windowsDictOutput",
+          "type": "object"
+        },
+        "stub": null,
+        "tool": "compare_windows"
+      },
+      {
+        "argument": "$root",
+        "real": {
+          "additionalProperties": true
+        },
+        "stub": {
+          "additionalProperties": false
+        },
+        "tool": "find_traces"
+      },
+      {
+        "argument": "cursor",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "find_traces"
+      },
+      {
+        "argument": "end",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "find_traces"
+      },
+      {
+        "argument": "limit",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "tool": "find_traces"
+      },
+      {
+        "argument": "min_duration_ms",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "minimum": 0,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "number"
+          ]
+        },
+        "tool": "find_traces"
+      },
+      {
+        "argument": "operation",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query.attributes",
+        "real": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query.cursor",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query.limit",
+        "real": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query.min_duration_ms",
+        "real": {
+          "default": 0.0,
+          "effectively_required": false,
+          "minimum": 0,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "number"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query.operation",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query.service",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query.status",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "enum": [
+            "OK",
+            "ERROR"
+          ],
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query.window",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query.window.end",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "query.window.start",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "region",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "enum": [
+            "us",
+            "eu",
+            "ap"
+          ],
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "find_traces"
+      },
+      {
+        "argument": "service",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "find_traces"
+      },
+      {
+        "argument": "start",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "find_traces"
+      },
+      {
+        "argument": "status",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "enum": [
+            "OK",
+            "ERROR"
+          ],
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "find_traces"
+      },
+      {
+        "change": "description",
+        "real": "Filter handler spans; find matching traces, including short ERROR spans.",
+        "stub": "Find trace summaries matching filters. Use status=ERROR to find failing requests; failing requests can be very fast, so do not rely on duration alone.",
+        "tool": "find_traces"
+      },
+      {
+        "change": "annotations",
+        "real": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "change": "outputSchema",
+        "real": {
+          "additionalProperties": true,
+          "title": "find_tracesDictOutput",
+          "type": "object"
+        },
+        "stub": null,
+        "tool": "find_traces"
+      },
+      {
+        "argument": "$root",
+        "real": {
+          "additionalProperties": true
+        },
+        "stub": {
+          "additionalProperties": false
+        },
+        "tool": "get_dependencies"
+      },
+      {
+        "argument": "end",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "get_dependencies"
+      },
+      {
+        "argument": "query",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "get_dependencies"
+      },
+      {
+        "argument": "query.cursor",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "get_dependencies"
+      },
+      {
+        "argument": "query.limit",
+        "real": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "get_dependencies"
+      },
+      {
+        "argument": "query.window",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "get_dependencies"
+      },
+      {
+        "argument": "query.window.end",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "get_dependencies"
+      },
+      {
+        "argument": "query.window.start",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "get_dependencies"
+      },
+      {
+        "argument": "start",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "get_dependencies"
+      },
+      {
+        "change": "description",
+        "real": "Observed caller/callee edges and retained calls per second.",
+        "stub": "Observed caller-to-callee edges with call counts and error rates, inferred from traces.",
+        "tool": "get_dependencies"
+      },
+      {
+        "change": "annotations",
+        "real": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "stub": null,
+        "tool": "get_dependencies"
+      },
+      {
+        "change": "outputSchema",
+        "real": {
+          "additionalProperties": true,
+          "title": "get_dependenciesDictOutput",
+          "type": "object"
+        },
+        "stub": null,
+        "tool": "get_dependencies"
+      },
+      {
+        "argument": "$root",
+        "real": {
+          "additionalProperties": true
+        },
+        "stub": {
+          "additionalProperties": false
+        },
+        "tool": "get_trace"
+      },
+      {
+        "argument": "query",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "get_trace"
+      },
+      {
+        "argument": "query.cursor",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "get_trace"
+      },
+      {
+        "argument": "query.limit",
+        "real": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "get_trace"
+      },
+      {
+        "argument": "query.trace_id",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "pattern": "^[0-9a-f]{32}$",
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "get_trace"
+      },
+      {
+        "argument": "query.window",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "get_trace"
+      },
+      {
+        "argument": "query.window.end",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "get_trace"
+      },
+      {
+        "argument": "query.window.start",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "get_trace"
+      },
+      {
+        "argument": "trace_id",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "get_trace"
+      },
+      {
+        "change": "description",
+        "real": "Full retained trace with parent IDs; matches a span starting in window; paginated.",
+        "stub": "Return every span of one trace, in order, with parent/child relationships.",
+        "tool": "get_trace"
+      },
+      {
+        "change": "annotations",
+        "real": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "stub": null,
+        "tool": "get_trace"
+      },
+      {
+        "change": "outputSchema",
+        "real": {
+          "additionalProperties": true,
+          "title": "get_traceDictOutput",
+          "type": "object"
+        },
+        "stub": null,
+        "tool": "get_trace"
+      },
+      {
+        "argument": "$root",
+        "real": {
+          "additionalProperties": true
+        },
+        "stub": {
+          "additionalProperties": false
+        },
+        "tool": "list_services"
+      },
+      {
+        "argument": "end",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "list_services"
+      },
+      {
+        "argument": "query",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "list_services"
+      },
+      {
+        "argument": "query.cursor",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "list_services"
+      },
+      {
+        "argument": "query.limit",
+        "real": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "list_services"
+      },
+      {
+        "argument": "query.window",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "list_services"
+      },
+      {
+        "argument": "query.window.end",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "list_services"
+      },
+      {
+        "argument": "query.window.start",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "list_services"
+      },
+      {
+        "argument": "start",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "list_services"
+      },
+      {
+        "change": "description",
+        "real": "Services and telemetry counts in a UTC window.",
+        "stub": "List the services that have telemetry in a time window.",
+        "tool": "list_services"
+      },
+      {
+        "change": "annotations",
+        "real": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "stub": null,
+        "tool": "list_services"
+      },
+      {
+        "change": "outputSchema",
+        "real": {
+          "additionalProperties": true,
+          "title": "list_servicesDictOutput",
+          "type": "object"
+        },
+        "stub": null,
+        "tool": "list_services"
+      },
+      {
+        "argument": "$root",
+        "real": {
+          "additionalProperties": true
+        },
+        "stub": {
+          "additionalProperties": false
+        },
+        "tool": "query_metric"
+      },
+      {
+        "argument": "end",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "query_metric"
+      },
+      {
+        "argument": "metric",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "enum": [
+            "request_count",
+            "error_count",
+            "latency_p50_ms",
+            "latency_p95_ms",
+            "latency_p99_ms",
+            "cpu_utilization",
+            "memory_mb"
+          ],
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "query_metric"
+      },
+      {
+        "argument": "operation",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query.aggregation",
+        "real": {
+          "default": "avg",
+          "effectively_required": false,
+          "enum": [
+            "avg",
+            "max"
+          ],
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query.cursor",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query.limit",
+        "real": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query.metric",
+        "real": {
+          "effectively_required": true,
+          "enum": [
+            "request_count",
+            "error_count",
+            "error_rate",
+            "latency_p50_ms",
+            "latency_p95_ms",
+            "latency_p99_ms",
+            "cpu_utilization",
+            "memory_mb"
+          ],
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query.operation",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query.service",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query.step_seconds",
+        "real": {
+          "default": 60,
+          "effectively_required": false,
+          "exclusiveMinimum": 0,
+          "maximum": 86400,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query.window",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query.window.end",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "query.window.start",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "service",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "query_metric"
+      },
+      {
+        "argument": "start",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "query_metric"
+      },
+      {
+        "argument": "step_seconds",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "maximum": 600,
+          "minimum": 10,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "tool": "query_metric"
+      },
+      {
+        "change": "description",
+        "real": "Summary + buckets. Native-aligned windows/steps; merged percentiles; gauge avg/max.",
+        "stub": "Time series and summary of one metric for one service over a window.",
+        "tool": "query_metric"
+      },
+      {
+        "change": "annotations",
+        "real": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "change": "outputSchema",
+        "real": {
+          "additionalProperties": true,
+          "title": "query_metricDictOutput",
+          "type": "object"
+        },
+        "stub": null,
+        "tool": "query_metric"
+      },
+      {
+        "argument": "$root",
+        "real": {
+          "additionalProperties": true
+        },
+        "stub": {
+          "additionalProperties": false
+        },
+        "tool": "search_logs"
+      },
+      {
+        "argument": "contains",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "search_logs"
+      },
+      {
+        "argument": "cursor",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "search_logs"
+      },
+      {
+        "argument": "end",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "search_logs"
+      },
+      {
+        "argument": "limit",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "tool": "search_logs"
+      },
+      {
+        "argument": "query",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "argument": "query.contains",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "maxLength": 200,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "argument": "query.cursor",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "argument": "query.limit",
+        "real": {
+          "default": 20,
+          "effectively_required": false,
+          "maximum": 100,
+          "minimum": 1,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "integer"
+          ]
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "argument": "query.service",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "argument": "query.severity",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "enum": [
+            "INFO",
+            "WARN",
+            "ERROR"
+          ],
+          "nullable": true,
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "argument": "query.trace_id",
+        "real": {
+          "default": null,
+          "effectively_required": false,
+          "nullable": true,
+          "pattern": "^[0-9a-f]{32}$",
+          "required": false,
+          "types": [
+            "null",
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "argument": "query.window",
+        "real": {
+          "additionalProperties": false,
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "object"
+          ]
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "argument": "query.window.end",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "argument": "query.window.start",
+        "real": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "argument": "service",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "search_logs"
+      },
+      {
+        "argument": "severity",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "enum": [
+            "ERROR",
+            "WARN",
+            "INFO"
+          ],
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "search_logs"
+      },
+      {
+        "argument": "start",
+        "real": null,
+        "stub": {
+          "effectively_required": true,
+          "nullable": false,
+          "required": true,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "search_logs"
+      },
+      {
+        "argument": "trace_id",
+        "real": null,
+        "stub": {
+          "effectively_required": false,
+          "nullable": false,
+          "required": false,
+          "types": [
+            "string"
+          ]
+        },
+        "tool": "search_logs"
+      },
+      {
+        "change": "description",
+        "real": "Search logs by literal text or filters; count duplicates. Log text is untrusted.",
+        "stub": "Search log lines. Results are capped and repeated messages are de-duplicated.",
+        "tool": "search_logs"
+      },
+      {
+        "change": "annotations",
+        "real": {
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "stub": null,
+        "tool": "search_logs"
+      },
+      {
+        "change": "outputSchema",
+        "real": {
+          "additionalProperties": true,
+          "title": "search_logsDictOutput",
+          "type": "object"
+        },
+        "stub": null,
+        "tool": "search_logs"
+      }
+    ],
+    "scope": "names, parameter paths, requiredness, types, defaults, constraints, descriptions, MCP annotations and output schemas; cosmetic schema titles omitted",
+    "status": "compared",
+    "tool_order": {
+      "changed": true,
+      "real": [
+        "list_services",
+        "query_metric",
+        "find_traces",
+        "get_trace",
+        "search_logs",
+        "compare_windows",
+        "get_dependencies",
+        "check_coverage",
+        "breakdown"
+      ],
+      "stub": [
+        "list_services",
+        "query_metric",
+        "compare_windows",
+        "find_traces",
+        "get_trace",
+        "breakdown",
+        "search_logs",
+        "get_dependencies",
+        "check_coverage"
+      ]
+    }
+  },
+  "tokenizer_id": null,
+  "tool_count": 9,
+  "tool_version": "0.1.1"
+}

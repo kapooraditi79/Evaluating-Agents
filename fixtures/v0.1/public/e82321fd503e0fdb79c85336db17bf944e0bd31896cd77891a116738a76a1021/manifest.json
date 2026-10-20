@@ -1,0 +1,16 @@
+{
+  "bucket_seconds": 10,
+  "data_range": {
+    "end": "2026-03-14T14:10:00Z",
+    "start": "2026-03-14T14:00:00Z"
+  },
+  "id": "e82321fd503e0fdb79c85336db17bf944e0bd31896cd77891a116738a76a1021",
+  "question": "Alert at 2026-03-14T14:07:00Z: frontend 'POST /checkout' p95 latency is approximately 480 ms (earlier approximately 120 ms); error rate is 0% (earlier 0%). Is there a sustained problem? If so identify the cause; otherwise say so.",
+  "reference_time": "2026-03-14T14:07:00Z",
+  "schema_version": "0.1.0",
+  "source": {
+    "path": ".",
+    "type": "parquet"
+  },
+  "trace_sampling_rate": 1.0
+}

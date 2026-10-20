@@ -1,0 +1,204 @@
+{
+  "$defs": {
+    "Cause": {
+      "additionalProperties": false,
+      "properties": {
+        "service": {
+          "title": "Service",
+          "type": "string"
+        },
+        "fault_type": {
+          "$ref": "#/$defs/Diagnosis"
+        },
+        "role": {
+          "default": "primary",
+          "enum": [
+            "primary",
+            "trigger"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "propagation_path": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Propagation Path",
+          "type": "array"
+        },
+        "onset_time": {
+          "title": "Onset Time",
+          "type": "string"
+        },
+        "end_time": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Time"
+        },
+        "scope": {
+          "$ref": "#/$defs/Scope"
+        },
+        "injection_mechanism": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Injection Mechanism"
+        }
+      },
+      "required": [
+        "service",
+        "fault_type",
+        "propagation_path",
+        "onset_time"
+      ],
+      "title": "Cause",
+      "type": "object"
+    },
+    "Diagnosis": {
+      "enum": [
+        "slow_dependency",
+        "elevated_errors",
+        "resource_saturation",
+        "memory_leak_restarts",
+        "dependency_unavailable",
+        "bad_release",
+        "retry_amplification",
+        "query_amplification",
+        "unknown"
+      ],
+      "title": "Diagnosis",
+      "type": "string"
+    },
+    "Scope": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "default": "all",
+          "enum": [
+            "all",
+            "region",
+            "version",
+            "endpoint"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "title": "Scope",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0",
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "id": {
+      "title": "Id",
+      "type": "string"
+    },
+    "root_causes": {
+      "items": {
+        "$ref": "#/$defs/Cause"
+      },
+      "title": "Root Causes",
+      "type": "array"
+    },
+    "no_fault": {
+      "title": "No Fault",
+      "type": "boolean"
+    },
+    "affected_services": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Affected Services",
+      "type": "array"
+    },
+    "symptom": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Symptom",
+      "type": "object"
+    },
+    "decoys": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Decoys",
+      "type": "array"
+    },
+    "degradations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Degradations",
+      "type": "array"
+    },
+    "features": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Features",
+      "type": "array"
+    },
+    "tier": {
+      "default": "easy",
+      "enum": [
+        "easy",
+        "hard"
+      ],
+      "title": "Tier",
+      "type": "string"
+    },
+    "generator_version": {
+      "default": "0.1.0",
+      "title": "Generator Version",
+      "type": "string"
+    },
+    "seed": {
+      "title": "Seed",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "id",
+    "root_causes",
+    "no_fault",
+    "symptom",
+    "seed"
+  ],
+  "title": "GroundTruth",
+  "type": "object"
+}

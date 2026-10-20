@@ -1,0 +1,17 @@
+{
+  "affected_services": [],
+  "decoys": [],
+  "degradations": [],
+  "features": [],
+  "generator_version": "0.1.1",
+  "id": "e82321fd503e0fdb79c85336db17bf944e0bd31896cd77891a116738a76a1021",
+  "no_fault": true,
+  "root_causes": [],
+  "schema_version": "0.1.0",
+  "seed": 103,
+  "symptom": {
+    "kind": "latency_or_errors",
+    "operation": "POST /checkout"
+  },
+  "tier": "easy"
+}

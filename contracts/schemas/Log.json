@@ -1,0 +1,66 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "ts_ns": {
+      "minimum": 0,
+      "title": "Ts Ns",
+      "type": "integer"
+    },
+    "service": {
+      "title": "Service",
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "INFO",
+        "WARN",
+        "ERROR"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "body": {
+      "title": "Body",
+      "type": "string"
+    },
+    "trace_id": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{32}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Trace Id"
+    },
+    "span_id": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{16}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Span Id"
+    },
+    "attributes": {
+      "additionalProperties": true,
+      "title": "Attributes",
+      "type": "object"
+    }
+  },
+  "required": [
+    "ts_ns",
+    "service",
+    "severity",
+    "body"
+  ],
+  "title": "Log",
+  "type": "object"
+}

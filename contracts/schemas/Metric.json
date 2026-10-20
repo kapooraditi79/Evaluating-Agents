@@ -1,0 +1,75 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "ts_ns": {
+      "minimum": 0,
+      "title": "Ts Ns",
+      "type": "integer"
+    },
+    "service": {
+      "title": "Service",
+      "type": "string"
+    },
+    "operation": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Operation"
+    },
+    "metric": {
+      "enum": [
+        "request_count",
+        "error_count",
+        "latency_p50_ms",
+        "latency_p95_ms",
+        "latency_p99_ms",
+        "cpu_utilization",
+        "memory_mb"
+      ],
+      "title": "Metric",
+      "type": "string"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Value"
+    },
+    "unit": {
+      "title": "Unit",
+      "type": "string"
+    },
+    "max_value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Max Value"
+    }
+  },
+  "required": [
+    "ts_ns",
+    "service",
+    "operation",
+    "metric",
+    "value",
+    "unit"
+  ],
+  "title": "Metric",
+  "type": "object"
+}

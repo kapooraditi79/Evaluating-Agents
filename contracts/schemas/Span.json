@@ -1,0 +1,82 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "trace_id": {
+      "pattern": "^[0-9a-f]{32}$",
+      "title": "Trace Id",
+      "type": "string"
+    },
+    "span_id": {
+      "pattern": "^[0-9a-f]{16}$",
+      "title": "Span Id",
+      "type": "string"
+    },
+    "parent_span_id": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{16}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Parent Span Id"
+    },
+    "service": {
+      "title": "Service",
+      "type": "string"
+    },
+    "operation": {
+      "title": "Operation",
+      "type": "string"
+    },
+    "start_ns": {
+      "minimum": 0,
+      "title": "Start Ns",
+      "type": "integer"
+    },
+    "end_ns": {
+      "minimum": 0,
+      "title": "End Ns",
+      "type": "integer"
+    },
+    "duration_ms": {
+      "minimum": 0,
+      "title": "Duration Ms",
+      "type": "number"
+    },
+    "status": {
+      "enum": [
+        "OK",
+        "ERROR"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "status_message": {
+      "title": "Status Message",
+      "type": "string"
+    },
+    "attributes": {
+      "additionalProperties": true,
+      "title": "Attributes",
+      "type": "object"
+    }
+  },
+  "required": [
+    "trace_id",
+    "span_id",
+    "parent_span_id",
+    "service",
+    "operation",
+    "start_ns",
+    "end_ns",
+    "duration_ms",
+    "status",
+    "status_message",
+    "attributes"
+  ],
+  "title": "Span",
+  "type": "object"
+}

@@ -1,0 +1,53 @@
+# Dependencies run sequentially. A caller includes child handler duration plus its own work.
+services:
+  frontend:
+    base_ms: 8
+    dependencies: []
+  checkout:
+    base_ms: 20
+    dependencies:
+      - {service: cart, critical: true}
+      - {service: payment, critical: true}
+      - {service: shipping, critical: true}
+      - {service: currency, critical: true}
+      - {service: email, critical: false}
+  cart:
+    base_ms: 12
+    dependencies: []
+  payment:
+    base_ms: 30
+    dependencies: []
+  shipping:
+    base_ms: 15
+    dependencies:
+      - {service: quote, critical: true}
+  quote:
+    base_ms: 18
+    dependencies: []
+  currency:
+    base_ms: 8
+    dependencies: []
+  email:
+    base_ms: 15
+    dependencies: []
+  productcatalog:
+    base_ms: 20
+    dependencies:
+      - {service: currency, critical: true}
+  recommendation:
+    base_ms: 15
+    dependencies:
+      - {service: productcatalog, critical: true}
+  ad:
+    base_ms: 5
+    dependencies: []
+operations:
+  'POST /checkout':
+    - {service: checkout, critical: true}
+    - {service: ad, critical: false}
+  'GET /products':
+    - {service: productcatalog, critical: true}
+    - {service: recommendation, critical: false}
+    - {service: ad, critical: false}
+  'POST /cart':
+    - {service: cart, critical: true}

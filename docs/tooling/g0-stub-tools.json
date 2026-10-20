@@ -1,0 +1,377 @@
+[
+  {
+    "function": {
+      "description": "List the services that have telemetry in a time window.",
+      "name": "list_services",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "description": "Window end (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "start": {
+            "description": "Window start (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  },
+  {
+    "function": {
+      "description": "Time series and summary of one metric for one service over a window.",
+      "name": "query_metric",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "description": "Window end (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "metric": {
+            "description": "Metric name",
+            "enum": [
+              "request_count",
+              "error_count",
+              "latency_p50_ms",
+              "latency_p95_ms",
+              "latency_p99_ms",
+              "cpu_utilization",
+              "memory_mb"
+            ],
+            "type": "string"
+          },
+          "operation": {
+            "description": "Operation name, e.g. 'POST /checkout'",
+            "type": "string"
+          },
+          "service": {
+            "description": "Service name, e.g. payment, checkout, frontend",
+            "type": "string"
+          },
+          "start": {
+            "description": "Window start (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "step_seconds": {
+            "description": "Resolution of the series in seconds",
+            "maximum": 600,
+            "minimum": 10,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "service",
+          "metric",
+          "start",
+          "end"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  },
+  {
+    "function": {
+      "description": "Compare one metric of one service between an incident window and a baseline window.",
+      "name": "compare_windows",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "baseline_end": {
+            "description": "Baseline window end (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "baseline_start": {
+            "description": "Baseline window start (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "incident_end": {
+            "description": "Incident window end (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "incident_start": {
+            "description": "Incident window start (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "metric": {
+            "description": "Metric name",
+            "enum": [
+              "request_count",
+              "error_count",
+              "latency_p50_ms",
+              "latency_p95_ms",
+              "latency_p99_ms",
+              "cpu_utilization",
+              "memory_mb"
+            ],
+            "type": "string"
+          },
+          "service": {
+            "description": "Service name, e.g. payment, checkout, frontend",
+            "type": "string"
+          }
+        },
+        "required": [
+          "service",
+          "metric",
+          "incident_start",
+          "incident_end",
+          "baseline_start",
+          "baseline_end"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  },
+  {
+    "function": {
+      "description": "Find trace summaries matching filters. Use status=ERROR to find failing requests; failing requests can be very fast, so do not rely on duration alone.",
+      "name": "find_traces",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "cursor": {
+            "description": "next_cursor from a previous truncated result",
+            "type": "string"
+          },
+          "end": {
+            "description": "Window end (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "limit": {
+            "description": "Maximum number of items to return",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "min_duration_ms": {
+            "minimum": 0,
+            "type": "number"
+          },
+          "operation": {
+            "description": "Operation name, e.g. 'POST /checkout'",
+            "type": "string"
+          },
+          "region": {
+            "enum": [
+              "us",
+              "eu",
+              "ap"
+            ],
+            "type": "string"
+          },
+          "service": {
+            "description": "Service name, e.g. payment, checkout, frontend",
+            "type": "string"
+          },
+          "start": {
+            "description": "Window start (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "OK",
+              "ERROR"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  },
+  {
+    "function": {
+      "description": "Return every span of one trace, in order, with parent/child relationships.",
+      "name": "get_trace",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "trace_id": {
+            "description": "32-character hex trace id taken from an earlier result",
+            "type": "string"
+          }
+        },
+        "required": [
+          "trace_id"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  },
+  {
+    "function": {
+      "description": "Grouped statistics of one metric, grouped by an attribute, over a window.",
+      "name": "breakdown",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "description": "Window end (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "group_by": {
+            "enum": [
+              "service",
+              "operation",
+              "status",
+              "version",
+              "region"
+            ],
+            "type": "string"
+          },
+          "metric": {
+            "description": "Metric name",
+            "enum": [
+              "request_count",
+              "error_count",
+              "latency_p50_ms",
+              "latency_p95_ms",
+              "latency_p99_ms",
+              "cpu_utilization",
+              "memory_mb"
+            ],
+            "type": "string"
+          },
+          "service": {
+            "description": "Service name, e.g. payment, checkout, frontend",
+            "type": "string"
+          },
+          "start": {
+            "description": "Window start (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "group_by",
+          "metric"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  },
+  {
+    "function": {
+      "description": "Search log lines. Results are capped and repeated messages are de-duplicated.",
+      "name": "search_logs",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "contains": {
+            "description": "Case-insensitive text to match",
+            "type": "string"
+          },
+          "cursor": {
+            "description": "next_cursor from a previous truncated result",
+            "type": "string"
+          },
+          "end": {
+            "description": "Window end (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "limit": {
+            "description": "Maximum number of items to return",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "service": {
+            "description": "Service name, e.g. payment, checkout, frontend",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "ERROR",
+              "WARN",
+              "INFO"
+            ],
+            "type": "string"
+          },
+          "start": {
+            "description": "Window start (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "trace_id": {
+            "description": "Only logs of this trace",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  },
+  {
+    "function": {
+      "description": "Observed caller-to-callee edges with call counts and error rates, inferred from traces.",
+      "name": "get_dependencies",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "description": "Window end (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "start": {
+            "description": "Window start (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  },
+  {
+    "function": {
+      "description": "Report trace sampling rate, metric gaps and unusual log volume in a window.",
+      "name": "check_coverage",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "end": {
+            "description": "Window end (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          },
+          "service": {
+            "description": "Service name, e.g. payment, checkout, frontend",
+            "type": "string"
+          },
+          "start": {
+            "description": "Window start (ISO-8601 UTC, e.g. 2026-03-14T14:05:00Z)",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end"
+        ],
+        "type": "object"
+      }
+    },
+    "type": "function"
+  }
+]

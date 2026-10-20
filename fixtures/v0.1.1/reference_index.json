@@ -1,0 +1,14 @@
+{
+  "fast_failure": {
+    "private": "private/92ce752b41fb14bad2efabff0d4e9f09abea308a1a1772a4dd8bdfbf5d0c5d49",
+    "public": "public/92ce752b41fb14bad2efabff0d4e9f09abea308a1a1772a4dd8bdfbf5d0c5d49"
+  },
+  "healthy": {
+    "private": "private/e82321fd503e0fdb79c85336db17bf944e0bd31896cd77891a116738a76a1021",
+    "public": "public/e82321fd503e0fdb79c85336db17bf944e0bd31896cd77891a116738a76a1021"
+  },
+  "slow_payment": {
+    "private": "private/856bbd1c9d78ceea0776082722d05b9a01ad7db621e320170986b52bedc9c5fb",
+    "public": "public/856bbd1c9d78ceea0776082722d05b9a01ad7db621e320170986b52bedc9c5fb"
+  }
+}

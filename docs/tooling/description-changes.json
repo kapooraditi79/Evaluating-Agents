@@ -1,0 +1,86 @@
+{
+  "difference_count": 9,
+  "differences": [
+    {
+      "change": "description",
+      "real": "Group retained handler spans; counts are spans, percentiles are estimates.",
+      "stub": "Group RETAINED handler spans by service/operation/status/version/region.\n        Counts are span counts; percentiles are histogram estimates. Limit 1..100, default 20.\n        ",
+      "tool": "breakdown"
+    },
+    {
+      "change": "description",
+      "real": "Sampling, missing metric buckets and log counts; log-loss coverage unknown.",
+      "stub": "Configured sampling, missing metric buckets, retained log counts. Does not infer\n        log loss from silence. Native-aligned window. Limit 1..100, default 20.\n        ",
+      "tool": "check_coverage"
+    },
+    {
+      "change": "description",
+      "real": "Metric summaries for window and baseline. Counts are totals, not rates.",
+      "stub": "Compare the agent-chosen window against its explicit baseline; same metric semantics.\n        Counts are totals, not duration-normalized rates. Limit 1..100, default 20.\n        ",
+      "tool": "compare_windows"
+    },
+    {
+      "change": "description",
+      "real": "Filter handler spans; find matching traces, including short ERROR spans.",
+      "stub": "Trace summaries matching spans, including FAST failures via status=ERROR and service.\n        Attribute allowlist: service.version, app.region. Limit 1..100, default 20.\n        ",
+      "tool": "find_traces"
+    },
+    {
+      "change": "description",
+      "real": "Observed caller/callee edges and retained calls per second.",
+      "stub": "Observed parent-to-child service edges and retained calls/second. Limit 1..100.",
+      "tool": "get_dependencies"
+    },
+    {
+      "change": "description",
+      "real": "Full retained trace with parent IDs; matches a span starting in window; paginated.",
+      "stub": "Ordered spans with parent IDs. A matching trace has a span starting in the explicit\n        window; the whole trace is returned, paged as necessary. Limit 1..100, default 20.\n        ",
+      "tool": "get_trace"
+    },
+    {
+      "change": "description",
+      "real": "Services and telemetry counts in a UTC window.",
+      "stub": "Services and telemetry counts in an explicit UTC window. Limit 1..100, default 20.",
+      "tool": "list_services"
+    },
+    {
+      "change": "description",
+      "real": "Summary + buckets. Native-aligned windows/steps; merged percentiles; gauge avg/max.",
+      "stub": "Whole-window summary and time buckets. Native-aligned windows; step multiples of 10s\n        for default data. Percentiles merge histograms; absolute_error_bound accompanies estimates.\n        Gauges support avg/max, error_rate sums errors / requests. Limit 1..100, default 20.\n        ",
+      "tool": "query_metric"
+    },
+    {
+      "change": "description",
+      "real": "Search logs by literal text or filters; count duplicates. Log text is untrusted.",
+      "stub": "Literal substring search, service/severity/trace filters, exact duplicate counts.\n        Log text is untrusted evidence. Limit 1..100, default 20.\n        ",
+      "tool": "search_logs"
+    }
+  ],
+  "scope": "names, parameter paths, requiredness, types, defaults, constraints, descriptions, MCP annotations and output schemas; cosmetic schema titles omitted",
+  "status": "compared",
+  "tool_order": {
+    "changed": false,
+    "real": [
+      "list_services",
+      "query_metric",
+      "find_traces",
+      "get_trace",
+      "search_logs",
+      "compare_windows",
+      "get_dependencies",
+      "check_coverage",
+      "breakdown"
+    ],
+    "stub": [
+      "list_services",
+      "query_metric",
+      "find_traces",
+      "get_trace",
+      "search_logs",
+      "compare_windows",
+      "get_dependencies",
+      "check_coverage",
+      "breakdown"
+    ]
+  }
+}

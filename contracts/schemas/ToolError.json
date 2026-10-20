@@ -1,0 +1,17 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "error": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Error",
+      "type": "object"
+    }
+  },
+  "required": [
+    "error"
+  ],
+  "title": "ToolError",
+  "type": "object"
+}

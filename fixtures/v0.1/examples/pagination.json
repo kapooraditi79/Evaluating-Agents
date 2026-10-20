@@ -1,0 +1,94 @@
+{
+  "pages": [
+    {
+      "arguments": {
+        "limit": 1,
+        "service": "payment",
+        "status": "ERROR",
+        "window": {
+          "end": "2026-03-14T14:10:00Z",
+          "start": "2026-03-14T14:00:00Z"
+        }
+      },
+      "response": {
+        "data": {
+          "columns": [
+            "handle",
+            "trace_id",
+            "matching_service",
+            "matching_start_ns",
+            "max_matching_duration_ms",
+            "status"
+          ],
+          "rows": [
+            [
+              "T1",
+              "265eefda4ac1a8c4136ad4fa860b17fa",
+              "payment",
+              1773497070043747520,
+              2.0,
+              "ERROR"
+            ]
+          ]
+        },
+        "next_cursor": "b7ca00c347e6a4dcfa6b6df7c45b906d78ad1b14a74033818663120359b0a804:1",
+        "query_id": "qb7ca00c3",
+        "returned": 1,
+        "source": {
+          "backend": "parquet",
+          "dataset_id": "cbe834b0ff5fec02aacdd70433d2ace74f17e91bb8cb425b25d09c827529df3e",
+          "tool_version": "0.1.0"
+        },
+        "total_matches": 110,
+        "truncated": true,
+        "warnings": []
+      }
+    },
+    {
+      "arguments": {
+        "cursor": "b7ca00c347e6a4dcfa6b6df7c45b906d78ad1b14a74033818663120359b0a804:1",
+        "limit": 1,
+        "service": "payment",
+        "status": "ERROR",
+        "window": {
+          "end": "2026-03-14T14:10:00Z",
+          "start": "2026-03-14T14:00:00Z"
+        }
+      },
+      "response": {
+        "data": {
+          "columns": [
+            "handle",
+            "trace_id",
+            "matching_service",
+            "matching_start_ns",
+            "max_matching_duration_ms",
+            "status"
+          ],
+          "rows": [
+            [
+              "T2",
+              "f03a6c93af3b8f67402e45c11cb62007",
+              "payment",
+              1773497073039943392,
+              2.0,
+              "ERROR"
+            ]
+          ]
+        },
+        "next_cursor": "b7ca00c347e6a4dcfa6b6df7c45b906d78ad1b14a74033818663120359b0a804:2",
+        "query_id": "qb7ca00c3",
+        "returned": 1,
+        "source": {
+          "backend": "parquet",
+          "dataset_id": "cbe834b0ff5fec02aacdd70433d2ace74f17e91bb8cb425b25d09c827529df3e",
+          "tool_version": "0.1.0"
+        },
+        "total_matches": 110,
+        "truncated": true,
+        "warnings": []
+      }
+    }
+  ],
+  "tool": "find_traces"
+}

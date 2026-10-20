@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "Window": {
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "title": "End",
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "title": "Window",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "window": {
+      "$ref": "#/$defs/Window"
+    },
+    "limit": {
+      "default": 20,
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Limit",
+      "type": "integer"
+    },
+    "cursor": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Cursor"
+    },
+    "service": {
+      "title": "Service",
+      "type": "string"
+    },
+    "metric": {
+      "enum": [
+        "request_count",
+        "error_count",
+        "error_rate",
+        "latency_p50_ms",
+        "latency_p95_ms",
+        "latency_p99_ms",
+        "cpu_utilization",
+        "memory_mb"
+      ],
+      "title": "Metric",
+      "type": "string"
+    },
+    "operation": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Operation"
+    },
+    "step_seconds": {
+      "default": 60,
+      "exclusiveMinimum": 0,
+      "maximum": 86400,
+      "title": "Step Seconds",
+      "type": "integer"
+    },
+    "aggregation": {
+      "default": "avg",
+      "enum": [
+        "avg",
+        "max"
+      ],
+      "title": "Aggregation",
+      "type": "string"
+    }
+  },
+  "required": [
+    "window",
+    "service",
+    "metric"
+  ],
+  "title": "QueryMetric",
+  "type": "object"
+}

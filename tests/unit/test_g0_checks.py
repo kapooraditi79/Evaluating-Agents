@@ -7,11 +7,16 @@ from evaluation.g0.checks import TOOLS_BY_NAME, grade_case, looks_like_tool_json
 from evaluation.g0.stub_tools import DATA_RANGE, TOOLS
 
 TRACE_ID = "c71d08e53fa2946b0d8e1a3c57b92f04"
-CONTEXT_MSG = {"role": "tool", "tool_name": "find_traces",
-               "content": f'{{"rows":[["T2","{TRACE_ID}",2310.7,"OK"]]}}'}
+CONTEXT_MSG = {
+    "role": "tool",
+    "tool_name": "find_traces",
+    "content": f'{{"rows":[["T2","{TRACE_ID}",2310.7,"OK"]]}}',
+}
 
-LOGS = {"mode": "call", "tools": {"search_logs": {
-    "service": {"equals": "payment"}, "severity": {"equals": "ERROR"}}}}
+LOGS = {
+    "mode": "call",
+    "tools": {"search_logs": {"service": {"equals": "payment"}, "severity": {"equals": "ERROR"}}},
+}
 
 
 def call(name, **arguments):
@@ -22,8 +27,9 @@ def case(expect, messages=None):
     return {"expect": expect, "messages": messages or [{"role": "user", "content": "x"}]}
 
 
-GOOD = dict(service="payment", severity="ERROR",
-            start="2026-03-14T14:05:00Z", end="2026-03-14T14:13:00Z")
+GOOD = dict(
+    service="payment", severity="ERROR", start="2026-03-14T14:05:00Z", end="2026-03-14T14:13:00Z"
+)
 
 
 def test_valid_call_passes_all_levels():
@@ -52,13 +58,16 @@ def test_extra_argument_is_schema_violation():
     assert r["failure"] == "schema_violation"
 
 
-@pytest.mark.parametrize("override", [
-    {"service": "payments"},                       # not a real service
-    {"start": "2026-03-14T14:13:00Z", "end": "2026-03-14T14:05:00Z"},   # reversed
-    {"start": "2026-03-14T13:00:00Z"},             # outside the data range
-    {"start": "14:05"},                            # not an ISO timestamp
-    {"end": "2026-03-14T14:13:00+00:00"},          # wrong format (offset instead of Z)
-])
+@pytest.mark.parametrize(
+    "override",
+    [
+        {"service": "payments"},  # not a real service
+        {"start": "2026-03-14T14:13:00Z", "end": "2026-03-14T14:05:00Z"},  # reversed
+        {"start": "2026-03-14T13:00:00Z"},  # outside the data range
+        {"start": "14:05"},  # not an ISO timestamp
+        {"end": "2026-03-14T14:13:00+00:00"},  # wrong format (offset instead of Z)
+    ],
+)
 def test_semantic_violations(override):
     r = grade_case(call("search_logs", **{**GOOD, **override}), case(LOGS))
     assert r["failure"] == "semantic_violation", r["problems"]
@@ -72,13 +81,21 @@ def test_trace_id_must_be_copied_exactly_from_context():
     one_char_off = TRACE_ID[:-1] + "5"
     bad = grade_case(call("get_trace", trace_id=one_char_off), case(expect, [CONTEXT_MSG]))
     assert bad["failure"] == "semantic_violation"
-    invented = grade_case(call("get_trace", trace_id=TRACE_ID), case(expect))   # no context
+    invented = grade_case(call("get_trace", trace_id=TRACE_ID), case(expect))  # no context
     assert invented["failure"] == "semantic_violation"
 
 
 def test_wrong_tool_and_wrong_argument():
-    r = grade_case(call("query_metric", service="payment", metric="error_count",
-                        start=GOOD["start"], end=GOOD["end"]), case(LOGS))
+    r = grade_case(
+        call(
+            "query_metric",
+            service="payment",
+            metric="error_count",
+            start=GOOD["start"],
+            end=GOOD["end"],
+        ),
+        case(LOGS),
+    )
     assert r["failure"] == "wrong_tool"
     r = grade_case(call("search_logs", **{**GOOD, "service": "checkout"}), case(LOGS))
     assert r["failure"] == "wrong_arg"
@@ -104,16 +121,21 @@ def test_tool_call_written_as_text_is_its_own_failure():
 
 
 def test_forbidden_tool_even_when_arguments_are_valid():
-    expect = {"mode": "call_or_none", "tools": {"search_logs": {}},
-              "forbidden_tools": ["get_dependencies"]}
+    expect = {
+        "mode": "call_or_none",
+        "tools": {"search_logs": {}},
+        "forbidden_tools": ["get_dependencies"],
+    }
     r = grade_case(call("get_dependencies", start=DATA_RANGE[0], end=DATA_RANGE[1]), case(expect))
     assert r["failure"] == "forbidden_tool"
     assert grade_case({"content": "Payment is restarting after OOM kills."}, case(expect))["passed"]
 
 
 def test_string_arguments_are_parsed_or_flagged():
-    msg = {"content": "", "tool_calls": [{"function": {
-        "name": "search_logs", "arguments": json.dumps(GOOD)}}]}
+    msg = {
+        "content": "",
+        "tool_calls": [{"function": {"name": "search_logs", "arguments": json.dumps(GOOD)}}],
+    }
     assert grade_case(msg, case(LOGS))["passed"]
     msg["tool_calls"][0]["function"]["arguments"] = "{not json"
     assert grade_case(msg, case(LOGS))["failure"] == "json_unparsed"

@@ -1,0 +1,14 @@
+{
+  "type": "string",
+  "enum": [
+    "slow_dependency",
+    "elevated_errors",
+    "resource_saturation",
+    "memory_leak_restarts",
+    "dependency_unavailable",
+    "bad_release",
+    "retry_amplification",
+    "query_amplification",
+    "unknown"
+  ]
+}

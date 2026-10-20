@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import json
 import math
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from jsonschema import Draft202012Validator
 
@@ -23,21 +23,33 @@ from .stub_tools import DATA_RANGE, SERVICES, TOOLS
 TOOLS_BY_NAME = {t["function"]["name"]: t["function"] for t in TOOLS}
 TS_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 TS_KEYS = ("start", "end", "incident_start", "incident_end", "baseline_start", "baseline_end")
-TS_PAIRS = (("start", "end"), ("incident_start", "incident_end"),
-            ("baseline_start", "baseline_end"))
+TS_PAIRS = (
+    ("start", "end"),
+    ("incident_start", "incident_end"),
+    ("baseline_start", "baseline_end"),
+)
 ID_KEYS = ("trace_id",)
 
 FAILURES = (
-    "request_error", "json_unparsed", "tool_call_as_text", "empty_reply", "missing_call",
-    "unneeded_call", "unknown_tool", "forbidden_tool", "schema_violation",
-    "semantic_violation", "wrong_tool", "wrong_arg",
+    "request_error",
+    "json_unparsed",
+    "tool_call_as_text",
+    "empty_reply",
+    "missing_call",
+    "unneeded_call",
+    "unknown_tool",
+    "forbidden_tool",
+    "schema_violation",
+    "semantic_violation",
+    "wrong_tool",
+    "wrong_arg",
 )
 
 
 def parse_ts(value) -> datetime:
     if not isinstance(value, str):
         raise ValueError("not a string")
-    return datetime.strptime(value, TS_FORMAT).replace(tzinfo=timezone.utc)
+    return datetime.strptime(value, TS_FORMAT).replace(tzinfo=UTC)
 
 
 def looks_like_tool_json(text: str) -> bool:
@@ -52,8 +64,10 @@ def looks_like_tool_json(text: str) -> bool:
     except ValueError:
         return '"name"' in t and ('"arguments"' in t or '"parameters"' in t)
     objs = obj if isinstance(obj, list) else [obj]
-    return any(isinstance(o, dict) and "name" in o and ("arguments" in o or "parameters" in o)
-               for o in objs)
+    return any(
+        isinstance(o, dict) and "name" in o and ("arguments" in o or "parameters" in o)
+        for o in objs
+    )
 
 
 def normalize_args(raw) -> dict:
@@ -123,8 +137,12 @@ def grade_case(message: dict, case: dict) -> dict:
     context = "\n".join(m.get("content", "") for m in case["messages"] if m.get("role") == "tool")
 
     result = {
-        "mode": mode, "n_calls": len(raw_calls), "passed": False, "failure": None,
-        "problems": [], "calls": [],
+        "mode": mode,
+        "n_calls": len(raw_calls),
+        "passed": False,
+        "failure": None,
+        "problems": [],
+        "calls": [],
         "levels": {"json_ok": None, "tool_exists": None, "schema_ok": None, "semantic_ok": None},
     }
 
@@ -145,8 +163,10 @@ def grade_case(message: dict, case: dict) -> dict:
         return result
 
     if mode == "no_call":
-        return fail("unneeded_call", f"called {raw_calls[0].get('function', {}).get('name')} "
-                                     "but no tool was needed")
+        return fail(
+            "unneeded_call",
+            f"called {raw_calls[0].get('function', {}).get('name')} but no tool was needed",
+        )
 
     calls = []
     for raw in raw_calls:
@@ -188,8 +208,11 @@ def grade_case(message: dict, case: dict) -> dict:
     first_name, first_args = calls[0]
     if first_name not in allowed:
         return fail("wrong_tool", f"called {first_name}, expected one of {sorted(allowed)}")
-    wrong = [p for p in (violated(k, first_args, r, context)
-                         for k, r in allowed[first_name].items()) if p]
+    wrong = [
+        p
+        for p in (violated(k, first_args, r, context) for k, r in allowed[first_name].items())
+        if p
+    ]
     if wrong:
         return fail("wrong_arg", *wrong)
 
