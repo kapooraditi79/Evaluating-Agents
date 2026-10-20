@@ -1,6 +1,6 @@
 # query_metric-1: function inputs and outputs
 
-Captured during a real stdio MCP request. Calls are listed in entry order; the output of an outer call is produced after its nested calls complete. The call number matches the raw calls.txt file. Expand a function to inspect its exact data. Infrastructure objects are described by type; model objects are shown as JSON. Python constructors return None; constructed_object shows the resulting model. Repeated generator-expression events are in stages.json and calls.txt.
+These inputs and outputs were observed during a real stdio MCP request. Calls are listed in entry order; the output of an outer call is produced after its nested calls complete. Expand a function to inspect its data. Infrastructure objects are described by type; model objects are shown as JSON. Python constructors return None; constructed_object shows the resulting model. Call numbers preserve the observed sequence; gaps include library calls and repeated generator-expression resumptions.
 
 <details>
 

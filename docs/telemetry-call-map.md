@@ -11,21 +11,17 @@ These are actual runs against the dataset open in the IDE, using the installed M
 
 All times in the examples are **2026-03-14, UTC**, matching the fixture. A window includes its start and excludes its end.
 
-## Open the detailed records
+## Open the detailed explanations
 
 | Record | What it contains |
 |---|---|
 | [Example 1: every captured application/SDK stage](tooling/call-walkthrough/query_metric-1-details.md) | Expandable function entries with inputs, closure values, outputs, file and line. |
 | [Example 2: every captured application/SDK stage](tooling/call-walkthrough/search_logs-1-details.md) | The same detail for the log search. |
 | [Example 2: next page](tooling/call-walkthrough/search_logs-2-details.md) | The additional cursor-validation path. |
-| [Exact requests and responses](tooling/call-walkthrough/requests-and-results.json) | All request arguments, result dictionaries and client-visible MCP results. |
-| [Example 1: raw call events](tooling/call-walkthrough/query_metric-1-calls.txt) | Every Python and C/builtin call event observed inside the server's `tools/call` handler. |
-| [Example 2: raw call events](tooling/call-walkthrough/search_logs-1-calls.txt) | The same raw trace for logs. |
-| [Next page: raw call events](tooling/call-walkthrough/search_logs-2-calls.txt) | The same raw trace with a continuation cursor. |
 
-The readable maps group repeated operations. The raw files retain them, including generator-expression resumptions, JSON serialization, schema checking and builtin calls. Call numbers in the detail files match the raw files.
+The readable maps group repeated operations. The linked Markdown explanations show individual application and SDK stages with their inputs and outputs. Their call numbers identify the sequence observed during execution; gaps include library calls and repeated generator-expression resumptions.
 
-**Trace boundary:** runtime capture starts at the low-level `tools/call` handler and ends at its return. Startup, wire parsing and client-side validation are mapped from the installed code below; they are outside those raw capture files. The detail files preserve application data and model outputs, but describe infrastructure objects by type. Python constructors return `None`; `constructed_object` records their resulting model. A C/builtin profiler event exposes its name, not all native internal calls or argument/return values. The maps do not claim to expose Pydantic's Rust internals, PyArrow internals, OS I/O calls or model-provider internals.
+**Scope:** the individual execution records cover the low-level `tools/call` handler through its return. Startup, wire parsing and client-side validation are mapped from the installed code below. The Markdown explanations preserve application data and model outputs, but describe infrastructure objects by type. Python constructors return `None`; `constructed_object` records their resulting model. The maps do not expose Pydantic's Rust internals, PyArrow internals, OS I/O calls or model-provider internals.
 
 ## Where a prompt enters
 
@@ -665,7 +661,7 @@ The outside AI client can now read those rows, ask for the next page, choose ano
 | `compact_json()` | Result dictionary | Compact ASCII JSON string | `self.count()` |
 | Default count lambda | JSON string | UTF-8 byte length | Budget comparison |
 
-The timestamp parser itself calls `re.fullmatch()`, `datetime.fromisoformat()` and `str.ljust()`, then uses integer arithmetic. `iso_time()` calls `divmod()`, `timedelta()`, `strftime()` and, for fractional seconds, `rstrip()`. The raw call files include the observable calls on these paths.
+The timestamp parser itself calls `re.fullmatch()`, `datetime.fromisoformat()` and `str.ljust()`, then uses integer arithmetic. `iso_time()` calls `divmod()`, `timedelta()`, `strftime()` and, for fractional seconds, `rstrip()`.
 
 `envelope()` runs three times for each two-row page: once after adding the first row, once after adding the second, and once for the final return. `TableData.rectangular()` runs twice per envelope because nested model validation rechecks the existing `TableData` instance. `ToolResult.consistent()` runs once per envelope.
 
@@ -713,12 +709,6 @@ An engine error dictionary travels through the normal SDK result machinery; call
 | `store/base.py: TelemetryStore.query()` | A Protocol signature describing the interface; runtime dispatch invokes `ParquetStore.query()`. |
 | `mcp_servers/telemetry/__init__.py`, `store/__init__.py` | Package import setup; no per-request query processing in the telemetry package marker. |
 
-## Reproduce the captures
+## Example verification
 
-```powershell
-.\.venv\Scripts\python.exe -W error docs/tooling/capture_call_walkthrough.py
-```
-
-The capture helper starts an instrumented stdio server using the production `create_server()`, `ToolEngine` and `ParquetStore`. It calls `initialize()`, discovers all nine tools, runs both examples and follows the log cursor once. Assertions check successful responses, two returned rows, preserved log query identity and the `L3` continuation handle. It replaces no query, hash, calculation or response implementation.
-
-Generated `*-stages.json` files contain selected function inputs/outputs in machine-readable form; `*-details.md` renders those records with expandable entries; `*-calls.txt` contains all observed handler call events; `*-counts.json` aggregates events by function. Anonymous generator-expression resumes are retained in the JSON and raw files but omitted from the expandable Markdown to keep it usable.
+The examples were checked through a real stdio MCP connection using the production `create_server()`, `ToolEngine` and `ParquetStore`. Verification initialized the client, discovered all nine tools, ran both examples and followed the log cursor once. Checks confirmed successful responses, two returned rows, preserved log query identity and the `L3` continuation handle. The Markdown explanations retain the resulting function inputs and outputs.
