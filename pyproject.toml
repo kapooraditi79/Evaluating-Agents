@@ -1,0 +1,13 @@
+[project]
+name = "otel-rca-investigator"
+version = "0.0.1"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+norecursedirs = ["reference", "runs", "data", ".git"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
