@@ -1,9 +1,13 @@
-# Telemetry: complete function and data-flow walkthrough
+# Start here: follow one question through the code
 
-Read the two example maps first. Each arrow means **the output on that arrow becomes an input to the next function**. Indented functions are called inside the function above them.
+Choose **one** example. Read its numbered steps from top to bottom. Each file tells the whole story, including how the answer returns.
 
-These are actual runs against the dataset open in the IDE, using the installed MCP SDK and a real client/server stdio connection. The natural-language prompts below illustrate how an AI client could choose the requests; no model was called to choose them.
+1. **[Example 1: ask how slow the frontend was](example-1-frontend-latency.md)**
+   Follow `query_metric()` from the question to the calculated response time.
+2. **[Example 2: find email error messages](example-2-email-logs.md)**
+   Follow `search_logs()` from the question to the matching messages, then ask for the next two messages.
 
+<<<<<<< HEAD
 | Example | Prompt                                                                             | Executed tool  | Actual result                                                  |
 | ------- | ---------------------------------------------------------------------------------- | -------------- | -------------------------------------------------------------- |
 | 1       | Show frontend p95 latency from 14:00 to 14:05; return two rows.                    | `query_metric` | Six logical rows; first two returned; summary p95 = 120 ms.    |
@@ -22,44 +26,43 @@ All times in the examples are **2026-03-14, UTC**, matching the fixture. A windo
 | [Example 1: raw call events](tooling/call-walkthrough/query_metric-1-calls.txt)                       | Every Python and C/builtin call event observed inside the server's `tools/call` handler. |
 | [Example 2: raw call events](tooling/call-walkthrough/search_logs-1-calls.txt)                        | The same raw trace for logs.                                                             |
 | [Next page: raw call events](tooling/call-walkthrough/search_logs-2-calls.txt)                        | The same raw trace with a continuation cursor.                                           |
+=======
+Every step tells you:
 
-The readable maps group repeated operations. The raw files retain them, including generator-expression resumptions, JSON serialization, schema checking and builtin calls. Call numbers in the detail files match the raw files.
+| Label | Meaning |
+|---|---|
+| File and function | Where to look in your code. Click the file link to open it. |
+| Data in | What the function receives. |
+| What happens | What it does with the data. |
+| Data out | What it produces. |
+| Goes to | Which function receives that output next. |
+>>>>>>> 704eea5e3c8e565f96f0041dfe4931a59b69c64b
 
-**Trace boundary:** runtime capture starts at the low-level `tools/call` handler and ends at its return. Startup, wire parsing and client-side validation are mapped from the installed code below; they are outside those raw capture files. The detail files preserve application data and model outputs, but describe infrastructure objects by type. Python constructors return `None`; `constructed_object` records their resulting model. A C/builtin profiler event exposes its name, not all native internal calls or argument/return values. The maps do not claim to expose Pydantic's Rust internals, PyArrow internals, OS I/O calls or model-provider internals.
-
-## Where a prompt enters
-
-```mermaid
-flowchart TD
-    A[User writes a natural-language prompt] --> B[External AI client chooses a tool and arguments]
-    B --> C[ClientSession.call_tool]
-    C --> D[stdio JSON-RPC request]
-    D --> E[FastMCP validates and calls server.py wrapper]
-    E --> F[ToolEngine.call]
-    F --> G[ParquetStore.query]
-    G -->|columns, all rows, warnings| F
-    F -->|bounded result dictionary| E
-    E --> H[MCP response over stdout]
-    H --> I[AI client reads result and may ask another question]
-```
-
-`server.py` does not read a natural-language prompt or choose a tool. It receives a tool name and structured arguments. One prompt can produce zero, one or many tool calls, depending on the external AI client.
-
-The existing G0 runner is a separate path:
+The route for both examples is:
 
 ```text
-evaluation/g0/run.py: run_case(case, ...)
-  -> SYSTEM_PROMPT.format(...)                  produces a system-prompt string
-  -> chat(host, model, messages, options, ...)
-       -> requests.post('/api/chat', json=...)  sends messages + STUB tool schemas
-       -> response.raise_for_status()           returns None on success
-       -> response.json()                       returns the model's proposed message/tool calls
-  -> checks.grade_case(message, case)           returns a grading dictionary
-  -> timing_of(response, elapsed)               returns a timing dictionary
-  -> write_text(...)                           writes request/response/grading/timing files
-  -> return case result dictionary
+You ask a question
+    |
+    v
+AI client chooses a tool and fills in its inputs
+    |
+    v
+mcp_servers/telemetry/server.py   receives the tool request
+    |
+    v
+mcp_servers/telemetry/engine.py   checks the request and asks for data
+    |
+    v
+store/parquet.py                 finds data or calculates a value
+    |
+    v
+mcp_servers/telemetry/engine.py   chooses the rows to send back
+    |
+    v
+mcp_servers/telemetry/server.py   returns the result to the AI client
 ```
 
+<<<<<<< HEAD
 That runner grades proposed calls. It does **not** invoke `ToolEngine.call()` or connect those proposed calls to the real MCP telemetry server.
 
 ## Startup: runs once before either example
@@ -876,3 +879,6 @@ An engine error dictionary travels through the normal SDK result machinery; call
 The capture helper starts an instrumented stdio server using the production `create_server()`, `ToolEngine` and `ParquetStore`. It calls `initialize()`, discovers all nine tools, runs both examples and follows the log cursor once. Assertions check successful responses, two returned rows, preserved log query identity and the `L3` continuation handle. It replaces no query, hash, calculation or response implementation.
 
 Generated `*-stages.json` files contain selected function inputs/outputs in machine-readable form; `*-details.md` renders those records with expandable entries; `*-calls.txt` contains all observed handler call events; `*-counts.json` aggregates events by function. Anonymous generator-expression resumes are retained in the JSON and raw files but omitted from the expandable Markdown to keep it usable.
+=======
+The example inputs and results were checked against the public sample dataset in this repository. Its date is **14 March 2026**. All times in the examples use **UTC**.
+>>>>>>> 704eea5e3c8e565f96f0041dfe4931a59b69c64b
