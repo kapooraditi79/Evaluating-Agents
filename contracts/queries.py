@@ -56,7 +56,7 @@ class SearchLogs(Query):
 class Coverage(Query):
     service: str | None = None
 
-
+ 
 class Dependencies(Query):
     pass
 

@@ -4,24 +4,24 @@ Read the two example maps first. Each arrow means **the output on that arrow bec
 
 These are actual runs against the dataset open in the IDE, using the installed MCP SDK and a real client/server stdio connection. The natural-language prompts below illustrate how an AI client could choose the requests; no model was called to choose them.
 
-| Example | Prompt | Executed tool | Actual result |
-|---|---|---|---|
-| 1 | Show frontend p95 latency from 14:00 to 14:05; return two rows. | `query_metric` | Six logical rows; first two returned; summary p95 = 120 ms. |
-| 2 | Show email ERROR logs containing “timed out” from 14:00 to 14:10; return two rows. | `search_logs` | Five matches; L1 and L2 returned; next page returns L3 and L4. |
+| Example | Prompt                                                                             | Executed tool  | Actual result                                                  |
+| ------- | ---------------------------------------------------------------------------------- | -------------- | -------------------------------------------------------------- |
+| 1       | Show frontend p95 latency from 14:00 to 14:05; return two rows.                    | `query_metric` | Six logical rows; first two returned; summary p95 = 120 ms.    |
+| 2       | Show email ERROR logs containing “timed out” from 14:00 to 14:10; return two rows. | `search_logs`  | Five matches; L1 and L2 returned; next page returns L3 and L4. |
 
 All times in the examples are **2026-03-14, UTC**, matching the fixture. A window includes its start and excludes its end.
 
 ## Open the detailed records
 
-| Record | What it contains |
-|---|---|
-| [Example 1: every captured application/SDK stage](tooling/call-walkthrough/query_metric-1-details.md) | Expandable function entries with inputs, closure values, outputs, file and line. |
-| [Example 2: every captured application/SDK stage](tooling/call-walkthrough/search_logs-1-details.md) | The same detail for the log search. |
-| [Example 2: next page](tooling/call-walkthrough/search_logs-2-details.md) | The additional cursor-validation path. |
-| [Exact requests and responses](tooling/call-walkthrough/requests-and-results.json) | All request arguments, result dictionaries and client-visible MCP results. |
-| [Example 1: raw call events](tooling/call-walkthrough/query_metric-1-calls.txt) | Every Python and C/builtin call event observed inside the server's `tools/call` handler. |
-| [Example 2: raw call events](tooling/call-walkthrough/search_logs-1-calls.txt) | The same raw trace for logs. |
-| [Next page: raw call events](tooling/call-walkthrough/search_logs-2-calls.txt) | The same raw trace with a continuation cursor. |
+| Record                                                                                                | What it contains                                                                         |
+| ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [Example 1: every captured application/SDK stage](tooling/call-walkthrough/query_metric-1-details.md) | Expandable function entries with inputs, closure values, outputs, file and line.         |
+| [Example 2: every captured application/SDK stage](tooling/call-walkthrough/search_logs-1-details.md)  | The same detail for the log search.                                                      |
+| [Example 2: next page](tooling/call-walkthrough/search_logs-2-details.md)                             | The additional cursor-validation path.                                                   |
+| [Exact requests and responses](tooling/call-walkthrough/requests-and-results.json)                    | All request arguments, result dictionaries and client-visible MCP results.               |
+| [Example 1: raw call events](tooling/call-walkthrough/query_metric-1-calls.txt)                       | Every Python and C/builtin call event observed inside the server's `tools/call` handler. |
+| [Example 2: raw call events](tooling/call-walkthrough/search_logs-1-calls.txt)                        | The same raw trace for logs.                                                             |
+| [Next page: raw call events](tooling/call-walkthrough/search_logs-2-calls.txt)                        | The same raw trace with a continuation cursor.                                           |
 
 The readable maps group repeated operations. The raw files retain them, including generator-expression resumptions, JSON serialization, schema checking and builtin calls. Call numbers in the detail files match the raw files.
 
@@ -155,8 +155,25 @@ The resulting store for this fixture contains:
 
 ```json
 {
-  "table_row_counts": {"spans": 3600, "logs": 5, "metrics": 5220, "histograms": 780},
-  "services": ["ad", "cart", "checkout", "currency", "email", "frontend", "payment", "productcatalog", "quote", "recommendation", "shipping"],
+  "table_row_counts": {
+    "spans": 3600,
+    "logs": 5,
+    "metrics": 5220,
+    "histograms": 780
+  },
+  "services": [
+    "ad",
+    "cart",
+    "checkout",
+    "currency",
+    "email",
+    "frontend",
+    "payment",
+    "productcatalog",
+    "quote",
+    "recommendation",
+    "shipping"
+  ],
   "frontend_operations": ["GET /products", "POST /cart", "POST /checkout"],
   "native_bucket_seconds": 10,
   "trace_sampling_rate": 1.0
@@ -171,22 +188,22 @@ Before the examples, the client calls `initialize()` and `list_tools()`. Discove
 
 For either example, let `NAME` be the tool name and `ARGS` its nested `{"query": ...}` dictionary:
 
-| Order | Function / file | Input | Output and destination |
-|---|---|---|---|
-| 1 | `ClientSession.call_tool(NAME, ARGS)` — MCP client SDK | Tool name and dictionary | Constructs `CallToolRequestParams` and `CallToolRequest`, then calls `send_request(...)`. |
-| 2 | `BaseSession.send_request(...)` — MCP shared SDK | Typed request | Assigns an ID; produces JSON-RPC `method: "tools/call"`, `params: {name, arguments}`; sends a session message. |
-| 3 | Client stdio writer | Session message | JSON text plus newline, written to the server process's stdin. |
-| 4 | Server `stdio_server.<locals>.stdin_reader()` | That JSON line | `JSONRPCMessage.model_validate_json(line)` produces a typed JSON-RPC message, wrapped in `SessionMessage` and sent to a memory stream. |
-| 5 | `BaseSession._receive_loop()` / `ServerSession._received_request()` | Session message | Validates `ClientRequest`; delivers a request responder and its `CallToolRequest` to the server dispatch loop. |
-| 6 | Low-level `Server._handle_message()` → `_handle_request()` | Typed request | Sets `RequestContext`; calls the registered `tools/call` handler. |
-| 7 | `Server.call_tool.<locals>.decorator.<locals>.handler()` — low-level SDK | `CallToolRequest` | Reads `NAME` and `ARGS`; calls `_get_cached_tool_definition(NAME)` → cached tool definition; calls `FastMCP.call_tool(NAME, ARGS)`. |
-| 8 | `FastMCP.call_tool()` → `get_context()` | Name, arguments | Context object; calls `ToolManager.call_tool(..., context, convert_result=True)`. |
-| 9 | `ToolManager.call_tool()` → `get_tool(NAME)` | Name | Registered `Tool`; calls `Tool.run(...)`. |
-| 10 | `Tool.run()` → `FuncMetadata.call_fn_with_arg_validation()` | Arguments and registered function | Calls the three functions below, then your wrapper. |
-| 11 | `FuncMetadata.pre_parse_json(ARGS)` | Nested argument dictionary | Same dictionary in these examples. String-encoded objects could be parsed here, but ours are already objects. |
-| 12 | Generated argument model `.model_validate(...)` | Dictionary | Validated argument model containing a `QueryMetric` or `SearchLogs` object; calls `Window.ordered()` → `utc_ns(start)` + `utc_ns(end)`. |
-| 13 | `ArgModelBase.model_dump_one_level()` | Argument model | `{"query": <QueryMetric or SearchLogs object>}`; deliberately preserves the inner Pydantic object. |
-| 14 | `server.py: query_metric(query)` OR `search_logs(query)` | Inner Pydantic object | Calls `query.model_dump()` and then `engine.call(NAME, flat_dictionary)`. |
+| Order | Function / file                                                          | Input                             | Output and destination                                                                                                                  |
+| ----- | ------------------------------------------------------------------------ | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `ClientSession.call_tool(NAME, ARGS)` — MCP client SDK                   | Tool name and dictionary          | Constructs `CallToolRequestParams` and `CallToolRequest`, then calls `send_request(...)`.                                               |
+| 2     | `BaseSession.send_request(...)` — MCP shared SDK                         | Typed request                     | Assigns an ID; produces JSON-RPC `method: "tools/call"`, `params: {name, arguments}`; sends a session message.                          |
+| 3     | Client stdio writer                                                      | Session message                   | JSON text plus newline, written to the server process's stdin.                                                                          |
+| 4     | Server `stdio_server.<locals>.stdin_reader()`                            | That JSON line                    | `JSONRPCMessage.model_validate_json(line)` produces a typed JSON-RPC message, wrapped in `SessionMessage` and sent to a memory stream.  |
+| 5     | `BaseSession._receive_loop()` / `ServerSession._received_request()`      | Session message                   | Validates `ClientRequest`; delivers a request responder and its `CallToolRequest` to the server dispatch loop.                          |
+| 6     | Low-level `Server._handle_message()` → `_handle_request()`               | Typed request                     | Sets `RequestContext`; calls the registered `tools/call` handler.                                                                       |
+| 7     | `Server.call_tool.<locals>.decorator.<locals>.handler()` — low-level SDK | `CallToolRequest`                 | Reads `NAME` and `ARGS`; calls `_get_cached_tool_definition(NAME)` → cached tool definition; calls `FastMCP.call_tool(NAME, ARGS)`.     |
+| 8     | `FastMCP.call_tool()` → `get_context()`                                  | Name, arguments                   | Context object; calls `ToolManager.call_tool(..., context, convert_result=True)`.                                                       |
+| 9     | `ToolManager.call_tool()` → `get_tool(NAME)`                             | Name                              | Registered `Tool`; calls `Tool.run(...)`.                                                                                               |
+| 10    | `Tool.run()` → `FuncMetadata.call_fn_with_arg_validation()`              | Arguments and registered function | Calls the three functions below, then your wrapper.                                                                                     |
+| 11    | `FuncMetadata.pre_parse_json(ARGS)`                                      | Nested argument dictionary        | Same dictionary in these examples. String-encoded objects could be parsed here, but ours are already objects.                           |
+| 12    | Generated argument model `.model_validate(...)`                          | Dictionary                        | Validated argument model containing a `QueryMetric` or `SearchLogs` object; calls `Window.ordered()` → `utc_ns(start)` + `utc_ns(end)`. |
+| 13    | `ArgModelBase.model_dump_one_level()`                                    | Argument model                    | `{"query": <QueryMetric or SearchLogs object>}`; deliberately preserves the inner Pydantic object.                                      |
+| 14    | `server.py: query_metric(query)` OR `search_logs(query)`                 | Inner Pydantic object             | Calls `query.model_dump()` and then `engine.call(NAME, flat_dictionary)`.                                                               |
 
 **An important SDK detail:** FastMCP registers the low-level handler with `validate_input=False`, so there is no low-level `jsonschema.validate()` input call on these requests. Input validation occurs through the FastMCP argument model, then again through your engine's query model. Output schema validation does occur later.
 
@@ -306,7 +323,7 @@ Shared MCP response path below
 
 ```json
 {
-  "window": {"start": "2026-03-14T14:00:00Z", "end": "2026-03-14T14:05:00Z"},
+  "window": { "start": "2026-03-14T14:00:00Z", "end": "2026-03-14T14:05:00Z" },
   "limit": 2,
   "cursor": null,
   "service": "frontend",
@@ -324,7 +341,19 @@ Output B contains the same values inside a `QueryMetric` object. Defaults were a
 This is the exact string, including its compact formatting:
 
 ```json
-{"arguments":{"aggregation":"avg","metric":"latency_p95_ms","operation":null,"service":"frontend","step_seconds":60,"window":{"end":"2026-03-14T14:05:00Z","start":"2026-03-14T14:00:00Z"}},"dataset_id":"856bbd1c9d78ceea0776082722d05b9a01ad7db621e320170986b52bedc9c5fb","tool":"query_metric","tool_version":"0.1.1"}
+{
+  "arguments": {
+    "aggregation": "avg",
+    "metric": "latency_p95_ms",
+    "operation": null,
+    "service": "frontend",
+    "step_seconds": 60,
+    "window": { "end": "2026-03-14T14:05:00Z", "start": "2026-03-14T14:00:00Z" }
+  },
+  "dataset_id": "856bbd1c9d78ceea0776082722d05b9a01ad7db621e320170986b52bedc9c5fb",
+  "tool": "query_metric",
+  "tool_version": "0.1.1"
+}
 ```
 
 ### The actual calculation inside `_metric_value()`
@@ -334,7 +363,10 @@ For the five-minute summary, the merged histogram passed into `percentile()` is:
 ```json
 {
   "counts": [0, 0, 45, 55, 8, 182, 0, 0, 0, 10, 0, 0, 0, 0, 0],
-  "bounds": [5.0, 10.0, 20.0, 40.0, 80.0, 160.0, 320.0, 640.0, 1280.0, 2560.0, 5120.0, 10240.0, 20480.0, 60000.0],
+  "bounds": [
+    5.0, 10.0, 20.0, 40.0, 80.0, 160.0, 320.0, 640.0, 1280.0, 2560.0, 5120.0,
+    10240.0, 20480.0, 60000.0
+  ],
   "q": 0.95
 }
 ```
@@ -347,14 +379,14 @@ For the last minute, the counts are `[0,0,9,11,1,29,0,0,0,10,0,0,0,0,0]`. Rank 5
 
 The function returns the tuple `(columns, rows, warnings)`. Before pagination, the rows are:
 
-| Kind | Start UTC | End UTC | Value | Absolute error bound | Unit |
-|---|---|---|---:|---:|---|
-| summary | 14:00:00 | 14:05:00 | 120 | 40 | ms |
-| bucket | 14:00:00 | 14:01:00 | 120 | 40 | ms |
-| bucket | 14:01:00 | 14:02:00 | 120 | 40 | ms |
-| bucket | 14:02:00 | 14:03:00 | 120 | 40 | ms |
-| bucket | 14:03:00 | 14:04:00 | 120 | 40 | ms |
-| bucket | 14:04:00 | 14:05:00 | 1920 | 640 | ms |
+| Kind    | Start UTC | End UTC  | Value | Absolute error bound | Unit |
+| ------- | --------- | -------- | ----: | -------------------: | ---- |
+| summary | 14:00:00  | 14:05:00 |   120 |                   40 | ms   |
+| bucket  | 14:00:00  | 14:01:00 |   120 |                   40 | ms   |
+| bucket  | 14:01:00  | 14:02:00 |   120 |                   40 | ms   |
+| bucket  | 14:02:00  | 14:03:00 |   120 |                   40 | ms   |
+| bucket  | 14:03:00  | 14:04:00 |   120 |                   40 | ms   |
+| bucket  | 14:04:00  | 14:05:00 |  1920 |                  640 | ms   |
 
 ```json
 [
@@ -378,10 +410,34 @@ The JSON above renders the Python tuple as an array. `limit=2` does not stop the
 ```json
 {
   "data": {
-    "columns": ["handle", "kind", "start_ns", "end_ns", "value", "absolute_error_bound", "unit"],
+    "columns": [
+      "handle",
+      "kind",
+      "start_ns",
+      "end_ns",
+      "value",
+      "absolute_error_bound",
+      "unit"
+    ],
     "rows": [
-      ["M1", "summary", 1773496800000000000, 1773497100000000000, 120.0, 40.0, "ms"],
-      ["M2", "bucket", 1773496800000000000, 1773496860000000000, 120.0, 40.0, "ms"]
+      [
+        "M1",
+        "summary",
+        1773496800000000000,
+        1773497100000000000,
+        120.0,
+        40.0,
+        "ms"
+      ],
+      [
+        "M2",
+        "bucket",
+        1773496800000000000,
+        1773496860000000000,
+        120.0,
+        40.0,
+        "ms"
+      ]
     ]
   },
   "total_matches": 6,
@@ -494,7 +550,7 @@ The filter and row-array construction are expressions inside `ParquetStore.query
 
 ```json
 {
-  "window": {"start": "2026-03-14T14:00:00Z", "end": "2026-03-14T14:10:00Z"},
+  "window": { "start": "2026-03-14T14:00:00Z", "end": "2026-03-14T14:10:00Z" },
   "limit": 2,
   "cursor": null,
   "service": "email",
@@ -509,7 +565,18 @@ Output B is a `SearchLogs` object with those values.
 ### Output C: canonical string
 
 ```json
-{"arguments":{"contains":"timed out","service":"email","severity":"ERROR","trace_id":null,"window":{"end":"2026-03-14T14:10:00Z","start":"2026-03-14T14:00:00Z"}},"dataset_id":"856bbd1c9d78ceea0776082722d05b9a01ad7db621e320170986b52bedc9c5fb","tool":"search_logs","tool_version":"0.1.1"}
+{
+  "arguments": {
+    "contains": "timed out",
+    "service": "email",
+    "severity": "ERROR",
+    "trace_id": null,
+    "window": { "end": "2026-03-14T14:10:00Z", "start": "2026-03-14T14:00:00Z" }
+  },
+  "dataset_id": "856bbd1c9d78ceea0776082722d05b9a01ad7db621e320170986b52bedc9c5fb",
+  "tool": "search_logs",
+  "tool_version": "0.1.1"
+}
 ```
 
 ### The intermediate log dictionary and duplicate key
@@ -540,11 +607,51 @@ The `json.dumps(row, sort_keys=True)` duplicate key contains **all** these field
 [
   ["ts_ns", "service", "severity", "body", "trace_id", "span_id", "count"],
   [
-    [1773497375000000000, "email", "ERROR", "delivery attempt timed out; queued for retry", null, null, 1],
-    [1773497380000000000, "email", "ERROR", "delivery attempt timed out; queued for retry", null, null, 1],
-    [1773497385000000000, "email", "ERROR", "delivery attempt timed out; queued for retry", null, null, 1],
-    [1773497390000000000, "email", "ERROR", "delivery attempt timed out; queued for retry", null, null, 1],
-    [1773497395000000000, "email", "ERROR", "delivery attempt timed out; queued for retry", null, null, 1]
+    [
+      1773497375000000000,
+      "email",
+      "ERROR",
+      "delivery attempt timed out; queued for retry",
+      null,
+      null,
+      1
+    ],
+    [
+      1773497380000000000,
+      "email",
+      "ERROR",
+      "delivery attempt timed out; queued for retry",
+      null,
+      null,
+      1
+    ],
+    [
+      1773497385000000000,
+      "email",
+      "ERROR",
+      "delivery attempt timed out; queued for retry",
+      null,
+      null,
+      1
+    ],
+    [
+      1773497390000000000,
+      "email",
+      "ERROR",
+      "delivery attempt timed out; queued for retry",
+      null,
+      null,
+      1
+    ],
+    [
+      1773497395000000000,
+      "email",
+      "ERROR",
+      "delivery attempt timed out; queued for retry",
+      null,
+      null,
+      1
+    ]
   ],
   []
 ]
@@ -557,10 +664,37 @@ Those timestamps correspond to 14:09:35, 14:09:40, 14:09:45, 14:09:50 and 14:09:
 ```json
 {
   "data": {
-    "columns": ["handle", "ts_ns", "service", "severity", "body", "trace_id", "span_id", "count"],
+    "columns": [
+      "handle",
+      "ts_ns",
+      "service",
+      "severity",
+      "body",
+      "trace_id",
+      "span_id",
+      "count"
+    ],
     "rows": [
-      ["L1", 1773497375000000000, "email", "ERROR", "delivery attempt timed out; queued for retry", null, null, 1],
-      ["L2", 1773497380000000000, "email", "ERROR", "delivery attempt timed out; queued for retry", null, null, 1]
+      [
+        "L1",
+        1773497375000000000,
+        "email",
+        "ERROR",
+        "delivery attempt timed out; queued for retry",
+        null,
+        null,
+        1
+      ],
+      [
+        "L2",
+        1773497380000000000,
+        "email",
+        "ERROR",
+        "delivery attempt timed out; queued for retry",
+        null,
+        null,
+        1
+      ]
     ]
   },
   "total_matches": 5,
@@ -582,7 +716,9 @@ Those timestamps correspond to 14:09:35, 14:09:40, 14:09:45, 14:09:50 and 14:09:
 The client repeats the same arguments and adds:
 
 ```json
-{"cursor": "8986b89280c72f1747e821ed66a6b976a2f7c46f464128b10d06a3dcb61b6a21:2"}
+{
+  "cursor": "8986b89280c72f1747e821ed66a6b976a2f7c46f464128b10d06a3dcb61b6a21:2"
+}
 ```
 
 This adds the following path inside `ToolEngine.call()` before the store call:
@@ -605,8 +741,26 @@ The next response changes these fields:
 ```json
 {
   "rows": [
-    ["L3", 1773497385000000000, "email", "ERROR", "delivery attempt timed out; queued for retry", null, null, 1],
-    ["L4", 1773497390000000000, "email", "ERROR", "delivery attempt timed out; queued for retry", null, null, 1]
+    [
+      "L3",
+      1773497385000000000,
+      "email",
+      "ERROR",
+      "delivery attempt timed out; queued for retry",
+      null,
+      null,
+      1
+    ],
+    [
+      "L4",
+      1773497390000000000,
+      "email",
+      "ERROR",
+      "delivery attempt timed out; queued for retry",
+      null,
+      null,
+      1
+    ]
   ],
   "query_id": "q8986b892",
   "returned": 2,
@@ -622,20 +776,20 @@ This is an excerpt of the response; the full envelope retains `data.columns`, `s
 
 Let `F2` be either example's final engine dictionary.
 
-| Order | Function / file | Input | Output and destination |
-|---|---|---|---|
-| 1 | `ToolEngine.call()` returns; `server.py` wrapper returns | Final selected rows and metadata | The same dictionary `F2`, back to `FuncMetadata.call_fn_with_arg_validation()`, then `Tool.run()`. |
-| 2 | `FuncMetadata.convert_result(F2)` | Dictionary | Calls `_convert_to_content(F2)` and validates the structured output model. |
-| 3 | `_convert_to_content(F2)` | Dictionary | `pydantic_core.to_json(F2, fallback=str, indent=2).decode()` produces pretty JSON text; `TextContent(type='text', text=...)` produces one text block. |
-| 4 | Generated output model `.model_validate(F2)` → `.model_dump(mode='json', by_alias=True)` | Dictionary | Structured dictionary with the same contents. |
-| 5 | `convert_result()` returns | Text blocks and structured dictionary | Python tuple `([TextContent(...)], F2)`; returned by `Tool.run()` → `ToolManager.call_tool()` → `FastMCP.call_tool()`. |
-| 6 | Low-level tool-call handler | That tuple | `jsonschema.validate(F2, tool.outputSchema)` returns `None` on success. Constructs `CallToolResult(content=..., structuredContent=F2, isError=False)`, wrapped in `ServerResult`. |
-| 7 | `Server._handle_request()` → `RequestResponder.respond(response)` | `ServerResult` | `BaseSession._send_response(request_id, response)` builds a JSON-RPC response and enqueues its `SessionMessage`. These send methods return `None` on success. |
-| 8 | Server `stdio_server.<locals>.stdout_writer()` | Session message | `model_dump_json(by_alias=True, exclude_none=True)` produces response JSON; `stdout.write(json+'\n')`, then `stdout.flush()` deliver it to the client. |
-| 9 | Client stdio reader → client `BaseSession._receive_loop()` | Response line | Parses JSON-RPC, matches request ID, delivers response to the waiting `send_request()`. |
-| 10 | Client `send_request()` | JSON-RPC result | Validated `CallToolResult`; returned to `ClientSession.call_tool()`. |
-| 11 | `ClientSession._validate_tool_result(NAME, result)` | `CallToolResult` | Uses cached output schema and `jsonschema.validate(result.structuredContent, schema)`; returns `None` on success. |
-| 12 | `ClientSession.call_tool()` returns | Validated result | The caller gets `result.structuredContent == F2`, a text rendering of F2 in `result.content`, and `result.isError == False`. |
+| Order | Function / file                                                                          | Input                                 | Output and destination                                                                                                                                                            |
+| ----- | ---------------------------------------------------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | `ToolEngine.call()` returns; `server.py` wrapper returns                                 | Final selected rows and metadata      | The same dictionary `F2`, back to `FuncMetadata.call_fn_with_arg_validation()`, then `Tool.run()`.                                                                                |
+| 2     | `FuncMetadata.convert_result(F2)`                                                        | Dictionary                            | Calls `_convert_to_content(F2)` and validates the structured output model.                                                                                                        |
+| 3     | `_convert_to_content(F2)`                                                                | Dictionary                            | `pydantic_core.to_json(F2, fallback=str, indent=2).decode()` produces pretty JSON text; `TextContent(type='text', text=...)` produces one text block.                             |
+| 4     | Generated output model `.model_validate(F2)` → `.model_dump(mode='json', by_alias=True)` | Dictionary                            | Structured dictionary with the same contents.                                                                                                                                     |
+| 5     | `convert_result()` returns                                                               | Text blocks and structured dictionary | Python tuple `([TextContent(...)], F2)`; returned by `Tool.run()` → `ToolManager.call_tool()` → `FastMCP.call_tool()`.                                                            |
+| 6     | Low-level tool-call handler                                                              | That tuple                            | `jsonschema.validate(F2, tool.outputSchema)` returns `None` on success. Constructs `CallToolResult(content=..., structuredContent=F2, isError=False)`, wrapped in `ServerResult`. |
+| 7     | `Server._handle_request()` → `RequestResponder.respond(response)`                        | `ServerResult`                        | `BaseSession._send_response(request_id, response)` builds a JSON-RPC response and enqueues its `SessionMessage`. These send methods return `None` on success.                     |
+| 8     | Server `stdio_server.<locals>.stdout_writer()`                                           | Session message                       | `model_dump_json(by_alias=True, exclude_none=True)` produces response JSON; `stdout.write(json+'\n')`, then `stdout.flush()` deliver it to the client.                            |
+| 9     | Client stdio reader → client `BaseSession._receive_loop()`                               | Response line                         | Parses JSON-RPC, matches request ID, delivers response to the waiting `send_request()`.                                                                                           |
+| 10    | Client `send_request()`                                                                  | JSON-RPC result                       | Validated `CallToolResult`; returned to `ClientSession.call_tool()`.                                                                                                              |
+| 11    | `ClientSession._validate_tool_result(NAME, result)`                                      | `CallToolResult`                      | Uses cached output schema and `jsonschema.validate(result.structuredContent, schema)`; returns `None` on success.                                                                 |
+| 12    | `ClientSession.call_tool()` returns                                                      | Validated result                      | The caller gets `result.structuredContent == F2`, a text rendering of F2 in `result.content`, and `result.isError == False`.                                                      |
 
 Both representations contain the same result. An agent integration should forward one representation to the model to avoid repeating the evidence. This response cap measures the engine's compact envelope, not the complete transport response or its duplicated text rendering.
 
@@ -643,27 +797,27 @@ The outside AI client can now read those rows, ask for the next page, choose ano
 
 ## What the small repeated helpers produce
 
-| Function | Input | Output | Consumer |
-|---|---|---|---|
-| `Window.ordered()` | Window object | Same object if `start < end`; otherwise raises | Pydantic caller |
-| `utc_ns()` | UTC timestamp string | Integer nanoseconds, e.g. `1773496800000000000` | Window validation, canonicalization or store |
-| `iso_time()` | Integer nanoseconds | Normalized UTC string, e.g. `2026-03-14T14:00:00Z` | Canonical query dictionary |
-| `canonical_query()` | Dataset, version, tool, query object | Stable JSON string | `QueryIds.get()` and `digest_query()` |
-| `digest_query()` | Canonical string | 64-character SHA-256 string | Short query ID / cursor |
-| `QueryIds.get()` | Canonical string | Short ID, e.g. `q8986b892` | Response `query_id` |
-| `_window()` | Window, alignment flag | Integer `(start,end)` pair | Store's filter/calculation branch |
-| `_missing_buckets()` | Service, operation, bounds, metric | Integer count | `_gaps()` or coverage branch |
-| `_gaps()` | Same request | Boolean | Warning decision |
-| `_metric_value()` | Metric, service, operation, bounds, aggregation | `(value, absolute_error_bound)` | Nested `point()` |
-| `validate_bounds()` | Histogram bounds | `None` if valid | `percentile()` |
-| `percentile()` | Bin counts, bounds, quantile | Estimated value and error bound | `_metric_value()` |
-| `point()` | Kind, left, right; captures query/service/unit from outer function | One metric row | Store's `rows` list |
-| Sort-key lambda in log branch | `(log_dict,count)` | `(timestamp,service,span_id_or_empty,body)` | `sorted()` |
-| `TableData.rectangular()` | Table model | Same model after checks | Pydantic construction/revalidation |
-| `ToolResult.consistent()` | Result model | Same model after checks | `envelope()` construction |
-| `envelope()` | Captures selected rows, offset, columns, IDs, warnings and store | Result dictionary | Budget checks and final return |
-| `compact_json()` | Result dictionary | Compact ASCII JSON string | `self.count()` |
-| Default count lambda | JSON string | UTF-8 byte length | Budget comparison |
+| Function                      | Input                                                              | Output                                             | Consumer                                     |
+| ----------------------------- | ------------------------------------------------------------------ | -------------------------------------------------- | -------------------------------------------- |
+| `Window.ordered()`            | Window object                                                      | Same object if `start < end`; otherwise raises     | Pydantic caller                              |
+| `utc_ns()`                    | UTC timestamp string                                               | Integer nanoseconds, e.g. `1773496800000000000`    | Window validation, canonicalization or store |
+| `iso_time()`                  | Integer nanoseconds                                                | Normalized UTC string, e.g. `2026-03-14T14:00:00Z` | Canonical query dictionary                   |
+| `canonical_query()`           | Dataset, version, tool, query object                               | Stable JSON string                                 | `QueryIds.get()` and `digest_query()`        |
+| `digest_query()`              | Canonical string                                                   | 64-character SHA-256 string                        | Short query ID / cursor                      |
+| `QueryIds.get()`              | Canonical string                                                   | Short ID, e.g. `q8986b892`                         | Response `query_id`                          |
+| `_window()`                   | Window, alignment flag                                             | Integer `(start,end)` pair                         | Store's filter/calculation branch            |
+| `_missing_buckets()`          | Service, operation, bounds, metric                                 | Integer count                                      | `_gaps()` or coverage branch                 |
+| `_gaps()`                     | Same request                                                       | Boolean                                            | Warning decision                             |
+| `_metric_value()`             | Metric, service, operation, bounds, aggregation                    | `(value, absolute_error_bound)`                    | Nested `point()`                             |
+| `validate_bounds()`           | Histogram bounds                                                   | `None` if valid                                    | `percentile()`                               |
+| `percentile()`                | Bin counts, bounds, quantile                                       | Estimated value and error bound                    | `_metric_value()`                            |
+| `point()`                     | Kind, left, right; captures query/service/unit from outer function | One metric row                                     | Store's `rows` list                          |
+| Sort-key lambda in log branch | `(log_dict,count)`                                                 | `(timestamp,service,span_id_or_empty,body)`        | `sorted()`                                   |
+| `TableData.rectangular()`     | Table model                                                        | Same model after checks                            | Pydantic construction/revalidation           |
+| `ToolResult.consistent()`     | Result model                                                       | Same model after checks                            | `envelope()` construction                    |
+| `envelope()`                  | Captures selected rows, offset, columns, IDs, warnings and store   | Result dictionary                                  | Budget checks and final return               |
+| `compact_json()`              | Result dictionary                                                  | Compact ASCII JSON string                          | `self.count()`                               |
+| Default count lambda          | JSON string                                                        | UTF-8 byte length                                  | Budget comparison                            |
 
 The timestamp parser itself calls `re.fullmatch()`, `datetime.fromisoformat()` and `str.ljust()`, then uses integer arithmetic. `iso_time()` calls `divmod()`, `timedelta()`, `strftime()` and, for fractional seconds, `rstrip()`. The raw call files include the observable calls on these paths.
 
@@ -673,45 +827,45 @@ The timestamp parser itself calls `re.fullmatch()`, `datetime.fromisoformat()` a
 
 Every tool uses the same MCP entry, `ToolEngine.call()`, canonical identity, pagination, envelope and MCP response path. Only the branch inside `ParquetStore.query()` changes:
 
-| Tool | Query model | Store branch and nested calls | Store output |
-|---|---|---|---|
-| `list_services` | `ListServices` | `_window()`; for each service `_spans()` → `_window()`; count spans/logs/metric points | Service/count rows |
-| `query_metric` | `QueryMetric` | `_window(aligned=True)`; `_gaps()` → `_missing_buckets()`; `point()` → `_metric_value()`; latency uses `percentile()` → `validate_bounds()` | Summary + bucket rows |
-| `compare_windows` | `CompareWindows` | Same metric helpers for main window and baseline; returns summary points | Summary + baseline rows |
-| `find_traces` | `FindTraces` | `_spans()` → `_window()`; filter/group by trace; `sorted()`/`min()`/`max()`/`any()`; root-status lookup | Trace match rows |
-| `get_trace` | `GetTrace` | `_spans()` → `_window()` determines matching trace IDs; select all retained spans for requested trace; `.sort(key=...)` | Span rows |
-| `search_logs` | `SearchLogs` | Filter; `casefold()`; duplicate keys via `json.dumps()`; `sorted(key=...)` | Log rows with multiplicity |
-| `get_dependencies` | `Dependencies` | `_spans()` → `_window()`; parent-span dictionary lookups; accumulate and `sorted()` | Caller/callee/count/rate rows |
-| `check_coverage` | `Coverage` | `_window(aligned=True)`; `_missing_buckets()` per service; count retained logs | Per-service coverage rows and warnings |
-| `breakdown` | `Breakdown` | `_spans()` → `_window()`; group and `sorted()`; counts or `histogram()` → `validate_bounds()`/`bisect_left()`, then `percentile()` → `validate_bounds()` | Group/value/error-bound rows and warnings |
+| Tool               | Query model      | Store branch and nested calls                                                                                                                            | Store output                              |
+| ------------------ | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `list_services`    | `ListServices`   | `_window()`; for each service `_spans()` → `_window()`; count spans/logs/metric points                                                                   | Service/count rows                        |
+| `query_metric`     | `QueryMetric`    | `_window(aligned=True)`; `_gaps()` → `_missing_buckets()`; `point()` → `_metric_value()`; latency uses `percentile()` → `validate_bounds()`              | Summary + bucket rows                     |
+| `compare_windows`  | `CompareWindows` | Same metric helpers for main window and baseline; returns summary points                                                                                 | Summary + baseline rows                   |
+| `find_traces`      | `FindTraces`     | `_spans()` → `_window()`; filter/group by trace; `sorted()`/`min()`/`max()`/`any()`; root-status lookup                                                  | Trace match rows                          |
+| `get_trace`        | `GetTrace`       | `_spans()` → `_window()` determines matching trace IDs; select all retained spans for requested trace; `.sort(key=...)`                                  | Span rows                                 |
+| `search_logs`      | `SearchLogs`     | Filter; `casefold()`; duplicate keys via `json.dumps()`; `sorted(key=...)`                                                                               | Log rows with multiplicity                |
+| `get_dependencies` | `Dependencies`   | `_spans()` → `_window()`; parent-span dictionary lookups; accumulate and `sorted()`                                                                      | Caller/callee/count/rate rows             |
+| `check_coverage`   | `Coverage`       | `_window(aligned=True)`; `_missing_buckets()` per service; count retained logs                                                                           | Per-service coverage rows and warnings    |
+| `breakdown`        | `Breakdown`      | `_spans()` → `_window()`; group and `sorted()`; counts or `histogram()` → `validate_bounds()`/`bisect_left()`, then `percentile()` → `validate_bounds()` | Group/value/error-bound rows and warnings |
 
 These remaining branches are mapped from source; they were not executed as additional examples. CPU/memory metrics use average or maximum calculations in `_metric_value()` rather than `percentile()`. Error rate uses paired request/error points and divides their totals. Counts use `sum()`.
 
 ## Failure branches: where normal execution stops
 
-| Stage | Condition / function | Output |
-|---|---|---|
-| FastMCP argument validation | Missing/extra/wrongly typed query fields, invalid timestamps or limits | SDK catches validation failure and returns MCP `isError=True`; wrapper/engine may not run. |
-| Engine tool lookup | Tool absent from `QUERY_MODELS` | `{"error":{"code":"UNKNOWN_TOOL","message":"tool is not available"}}` |
-| Engine `.model_validate()` | Invalid dictionary passed directly to engine | `{"error":{"code":"INVALID_ARGUMENT","message":"arguments do not match the tool schema"}}` |
-| Cursor parsing | Hash mismatch, bad offset syntax or offset beyond results | `QueryError('INVALID_CURSOR', ...)` → engine returns an error dictionary. |
-| Store checks | Unknown service/operation, out-of-range or unaligned window, invalid step, etc. | `QueryError(code,message)` → engine returns an error dictionary. |
-| Response building | A complete first row or metadata cannot fit the cap | `QueryError('OUTPUT_TOO_LARGE', ...)` → engine returns an error dictionary. |
-| Unexpected engine failure | Other exception | `logging.getLogger(...).exception(...)` writes traceback to stderr; engine returns `QUERY_FAILED`. |
-| SDK conversion/output validation | Invalid result shape | MCP error response with `isError=True`. |
+| Stage                            | Condition / function                                                            | Output                                                                                             |
+| -------------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| FastMCP argument validation      | Missing/extra/wrongly typed query fields, invalid timestamps or limits          | SDK catches validation failure and returns MCP `isError=True`; wrapper/engine may not run.         |
+| Engine tool lookup               | Tool absent from `QUERY_MODELS`                                                 | `{"error":{"code":"UNKNOWN_TOOL","message":"tool is not available"}}`                              |
+| Engine `.model_validate()`       | Invalid dictionary passed directly to engine                                    | `{"error":{"code":"INVALID_ARGUMENT","message":"arguments do not match the tool schema"}}`         |
+| Cursor parsing                   | Hash mismatch, bad offset syntax or offset beyond results                       | `QueryError('INVALID_CURSOR', ...)` → engine returns an error dictionary.                          |
+| Store checks                     | Unknown service/operation, out-of-range or unaligned window, invalid step, etc. | `QueryError(code,message)` → engine returns an error dictionary.                                   |
+| Response building                | A complete first row or metadata cannot fit the cap                             | `QueryError('OUTPUT_TOO_LARGE', ...)` → engine returns an error dictionary.                        |
+| Unexpected engine failure        | Other exception                                                                 | `logging.getLogger(...).exception(...)` writes traceback to stderr; engine returns `QUERY_FAILED`. |
+| SDK conversion/output validation | Invalid result shape                                                            | MCP error response with `isError=True`.                                                            |
 
 An engine error dictionary travels through the normal SDK result machinery; callers must inspect `structuredContent.error` as well as `isError`. A zero-match successful query instead returns a table with zero rows, `returned=0`, `truncated=false`, and `next_cursor=null`.
 
 ## Functions you may see in the files but not on these query paths
 
-| Function/file | When it runs |
-|---|---|
-| `store/evidence.py: verifies()` | Only when an explicit consumer calls it to compare a query ID with canonical text. The engine does not call it. |
-| `telemetry/histograms.py: histogram()` | Called by latency `breakdown`; these metric examples merge existing histograms. |
-| `contracts/models.py: export_schemas()` | Schema-export CLI, not ordinary query execution. |
-| `contracts/models.py` private diagnosis/ground-truth validators | Generation/evaluation workflows; the public telemetry server does not load private truth for these calls. |
-| `store/base.py: TelemetryStore.query()` | A Protocol signature describing the interface; runtime dispatch invokes `ParquetStore.query()`. |
-| `mcp_servers/telemetry/__init__.py`, `store/__init__.py` | Package import setup; no per-request query processing in the telemetry package marker. |
+| Function/file                                                   | When it runs                                                                                                    |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `store/evidence.py: verifies()`                                 | Only when an explicit consumer calls it to compare a query ID with canonical text. The engine does not call it. |
+| `telemetry/histograms.py: histogram()`                          | Called by latency `breakdown`; these metric examples merge existing histograms.                                 |
+| `contracts/models.py: export_schemas()`                         | Schema-export CLI, not ordinary query execution.                                                                |
+| `contracts/models.py` private diagnosis/ground-truth validators | Generation/evaluation workflows; the public telemetry server does not load private truth for these calls.       |
+| `store/base.py: TelemetryStore.query()`                         | A Protocol signature describing the interface; runtime dispatch invokes `ParquetStore.query()`.                 |
+| `mcp_servers/telemetry/__init__.py`, `store/__init__.py`        | Package import setup; no per-request query processing in the telemetry package marker.                          |
 
 ## Reproduce the captures
 
